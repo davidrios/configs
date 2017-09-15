@@ -10,7 +10,7 @@ dconf write /org/gnome/desktop/wm/keybindings/cycle-windows "['<Super>Right']"
 dconf write /org/gnome/desktop/wm/keybindings/cycle-windows-backward "['<Super>Left']"
 
 for i in {1..9}; do
-dconf write /org/gnome/desktop/wm/keybindings/switch-to-workspace-$1 "['<Super>$i']"
-dconf write /org/gnome/desktop/wm/keybindings/move-to-workspace-$1 "['<Shift><Super>$i']"
+dconf write /org/gnome/desktop/wm/keybindings/switch-to-workspace-$i "['<Super>$i']"
+dconf write /org/gnome/desktop/wm/keybindings/move-to-workspace-$i "['<Shift><Super>$i']"
 done
 
