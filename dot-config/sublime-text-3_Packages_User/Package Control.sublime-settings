@@ -1,0 +1,25 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"Anaconda",
+		"Babel",
+		"LESS",
+		"Mako",
+		"Package Control",
+		"PackageDev",
+		"Rust Enhanced",
+		"Sass",
+		"ScopeAlways",
+		"StandardFormat",
+		"Stylus",
+		"SublimeLinter",
+		"SublimeLinter-contrib-standard",
+		"SublimeLinter-eslint",
+		"SublimeLinter-flake8",
+		"TOML"
+	]
+}
