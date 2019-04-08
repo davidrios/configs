@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+import notify2
+
+
+def show_notification(title, *, text='', expires=-1):
+    notify2.init('pynotify2')
+    notification = notify2.Notification(title, message=text)
+    notification.set_timeout(expires)
+    notification.show()
+
+
+def main():
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser()
+    parser.add_argument('-t', '--text', default='', help='Notification body text.')
+    parser.add_argument('-e', '--expires', type=int, default=-1, help='Expiration time in miliseconds.')
+    parser.add_argument('title')
+
+    args = parser.parse_args()
+    show_notification(args.title, text=args.text, expires=args.expires)
+
+if __name__ == '__main__':
+    main()
