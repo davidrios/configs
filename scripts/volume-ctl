@@ -1,0 +1,58 @@
+#!/usr/bin/env python3
+import re
+import sys
+
+import pulsectl
+
+
+def run(value):
+    if value in {'mute', 'unmute', 'toggle'}:
+        op = None
+    else:
+        match = re.match(r'^([-+])?(\d+(?:\.\d+)?)$', value)
+        if match is None:
+            sys.exit('Error: invalid value.')
+
+        op, value = match.groups()
+        if op not in {'-', '+', None}:
+            sys.exit('Error: invalid value.')
+
+        try:
+            value = float(value)
+        except ValueError:
+            sys.exit('Error: invalid value.')
+
+        value = value / 100
+
+    pulse = pulsectl.Pulse('volume-ctl')
+    sink = pulse.sink_list()[0]
+
+    if value == 'mute':
+        pulse.mute(sink)
+    elif value == 'unmute':
+        pulse.mute(sink, False)
+    elif value == 'toggle':
+        pulse.mute(sink, not sink.mute)
+    else:
+        if op == '+':
+            value = sink.volume.value_flat + value
+        elif op == '-':
+            value = sink.volume.value_flat - value
+
+        pulse.volume_set_all_chans(sink, max(0, min(value, 1.0)))
+
+
+
+def main():
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser()
+    parser.add_argument('value')
+
+    args = parser.parse_args()
+
+    run(args.value)
+
+
+if __name__ == '__main__':
+    main()

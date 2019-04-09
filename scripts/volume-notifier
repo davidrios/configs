@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+from functools import partial
+from queue import Queue, Empty
+
+import notify2
+import pulsectl
+from dbus.exceptions import DBusException
+
+
+def event_callback(queue, ev):
+    if ev.t is not pulsectl.PulseEventTypeEnum.change:
+        return
+
+    queue.put('1')
+
+
+notify_init = False
+notification = None
+def show_notification(message):
+    global notify_init
+    global notification
+
+    try:
+        if not notify_init:
+            notify2.init('Volume Notifier')
+
+        if notification is None:
+            notification = notify2.Notification('')
+            notification.set_timeout(3000)
+
+        notification.update(message)
+        notification.show()
+    except DBusException as ex:
+        notify_init = False
+        notification = None
+
+
+def run():
+    queue = Queue()
+
+    with pulsectl.Pulse('Volume Notifier') as pulse:
+        pulse.event_mask_set(pulsectl.PulseEventMaskEnum.sink)
+        pulse.event_callback_set(partial(event_callback, queue))
+
+        last_state = None
+
+        while True:
+            pulse.event_listen(timeout=0.1)
+
+            try:
+                queue.get(timeout=0.1)
+            except Empty:
+                continue
+
+            sink = pulse.sink_list()[0]
+            state = (sink.mute, sink.volume.value_flat)
+            if state == last_state:
+                continue
+
+            if sink.mute:
+                volume = 'MUTE'
+            else:
+                volume = '{:.0f}%'.format(sink.volume.value_flat * 100)
+
+            show_notification('Volume: {}'.format(volume))
+            last_state = state
+
+
+def main():
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser()
+    args = parser.parse_args()
+
+    run()
+
+
+if __name__ == '__main__':
+    main()
