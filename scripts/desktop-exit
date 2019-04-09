@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RESP=$(cat <<EOF | dmenu -i
+RESP=$(cat <<EOF | fzf
 Logout
 Sleep
 Reboot
