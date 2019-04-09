@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
+import os
+import sys
 from functools import partial
+from pathlib import Path
 from queue import Queue, Empty
 
 import notify2
@@ -66,13 +69,36 @@ def run():
             last_state = state
 
 
+class GuardRunning(object):
+    def __enter__(self):
+        fname = Path('/tmp') / 'volume-notifier-{}.pid'.format(os.getuid())
+        self.fname = fname
+        try:
+            with fname.open('r') as fp:
+                try:
+                    os.kill(int(fp.read()), 0)
+                except OSError:
+                    pass
+                else:
+                    sys.exit('Volume Notifier is already running.')
+        except FileNotFoundError:
+            pass
+
+        with fname.open('w') as fp:
+            fp.write(str(os.getpid()))
+
+    def __exit__(self, *args):
+        self.fname.unlink()
+
+
 def main():
     from argparse import ArgumentParser
 
     parser = ArgumentParser()
     args = parser.parse_args()
 
-    run()
+    with GuardRunning():
+        run()
 
 
 if __name__ == '__main__':
