@@ -1,0 +1,5 @@
+[Desktop Entry]
+Name=GNOME + Sway
+Comment=GNOME + Sway
+Exec=/usr/bin/gnome-session --session=gnome-sway
+Type=Application

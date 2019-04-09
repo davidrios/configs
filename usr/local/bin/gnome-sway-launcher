@@ -1,0 +1,3 @@
+#!/bin/bash
+sway
+pkill -f gnome-session-binary
