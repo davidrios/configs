@@ -1,0 +1,8 @@
+// SublimeLinter Settings - User
+{
+	"linters": {
+		"standard": {
+			"env": {"PATH": "~/.nodenv/shims:/usr/bin:/bin"},
+		}
+	}
+}
