@@ -1,0 +1,4 @@
+#!/bin/bash
+NAME=$($HOME/local/bin/find-desktop-apps | fzf -d: --with-nth 2 | cut -d: -f1)
+[ -z "$NAME" ] && exit
+swaymsg exec "gtk-launch $NAME"

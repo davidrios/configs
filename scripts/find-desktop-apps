@@ -1,0 +1,101 @@
+#!/bin/env python3
+import logging
+import json
+import sys
+from configparser import RawConfigParser, NoOptionError
+from itertools import chain
+from locale import getlocale
+from pathlib import Path
+
+log = logging.getLogger(__name__)
+DEFAULT_INCLUDES = [
+    Path('/usr/share/applications'),
+    Path('/usr/local/share/applications'),
+    Path('~/.local/share/applications').expanduser()
+]
+CACHE_FILE = '/tmp/find-desktop-desktop.cache'
+
+
+def find(include_paths=None, delimiter=':', sort=True):
+    if include_paths is None:
+        include_paths = DEFAULT_INCLUDES
+    else:
+        include_paths = [Path(i) for i in include_paths]
+
+    locale = getlocale()[0]
+    res = []
+
+    cache = {}
+    try:
+        with open(CACHE_FILE, 'r') as fp:
+            cache = json.load(fp)
+    except FileNotFoundError:
+        pass
+
+    for dfile in chain.from_iterable(p.glob('*.desktop') for p in include_paths):
+        fname = dfile.name
+        if fname in cache:
+            res.append((cache[fname], fname))
+            continue
+
+        conf = RawConfigParser()
+        conf.read(dfile)
+
+        if not conf.has_section('Desktop Entry'):
+            log.debug('Skipping %s, no desktop entry.', fname)
+            continue
+
+        try:
+            if conf.get('Desktop Entry', 'type') != 'Application':
+                log.debug('Skipping %s, not of application type.', fname)
+                continue
+        except NoOptionError:
+            log.debug('Skipping %s, not of application type.', fname)
+            continue
+
+        name = conf.get('Desktop Entry', 'name')
+        try:
+            name = conf.get('Desktop Entry', 'name[{}]'.format(locale))
+        except NoOptionError:
+            pass
+
+        res.append((name, fname))
+        cache[fname] = name
+
+    with open(CACHE_FILE, 'w') as fp:
+        json.dump(cache, fp)
+
+    if sort:
+        res.sort(key=lambda item: item[0].lower())
+
+    sys.stdout.write('\n'.join('{}:{}'.format(fname, name) for name, fname in res))
+    sys.stdout.flush()
+
+
+def cli():
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--include', action='append')
+    parser.add_argument('-d', '--delimiter', default=':')
+    parser.add_argument('--no-sort', action='store_true')
+    parser.add_argument('--verbose', '-v', action='count')
+
+    args = parser.parse_args()
+
+    level = {
+        None: logging.ERROR,
+        1: logging.WARNING,
+        2: logging.INFO,
+        3: logging.DEBUG,
+    }.get(args.verbose, logging.DEBUG)
+
+    logging.basicConfig(level=level,
+                        format='%(asctime)s.%(msecs)03d:%(name)s:%(levelname)s:%(message)s',
+                        datefmt='%Y%m%d_%H%M%S')
+
+    find(args.include, delimiter=args.delimiter, sort=not args.no_sort)
+
+
+if __name__ == '__main__':
+    cli()
