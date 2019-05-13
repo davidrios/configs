@@ -3,6 +3,9 @@
 	"linters": {
 		"standard": {
 			"env": {"PATH": "~/.nodenv/shims:/usr/bin:/bin"},
+		},
+		"flow": {
+			"env": {"PATH": "~/.nodenv/shims:/usr/bin:/bin"},
 		}
 	}
 }
