@@ -1,3 +1,3 @@
 [GNOME Session]
 Name=GNOME + Sway
-RequiredComponents=sway-launcher
+RequiredComponents=gnome-sway-launcher

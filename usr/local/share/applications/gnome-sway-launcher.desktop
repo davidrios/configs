@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=sway-launcher
+Name=gnome-sway-launcher
 NoDisplay=true
 Exec=/usr/local/bin/gnome-sway-launcher
 
