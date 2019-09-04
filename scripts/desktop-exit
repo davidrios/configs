@@ -13,7 +13,7 @@ case "$RESP" in
 		swaymsg exit
 		;;
 	Sleep)
-		systemctl suspend
+		systemctl suspend -i
 		;;
 	Reboot)
 		systemctl reboot
