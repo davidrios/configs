@@ -8,6 +8,7 @@
 		"Anaconda",
 		"Babel",
 		"Base16 Color Schemes",
+		"Dockerfile Syntax Highlighting",
 		"Emmet",
 		"LESS",
 		"Mako",
@@ -22,6 +23,7 @@
 		"SublimeLinter-contrib-standard",
 		"SublimeLinter-flake8",
 		"SublimeLinter-json",
-		"TOML"
+		"TOML",
+		"Vue Syntax Highlight"
 	]
 }
