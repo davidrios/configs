@@ -21,7 +21,7 @@ gnome-extensions enable 'Hide_Activities@shay.shayel.org'
 gnome-extensions enable 'impatience@gfxmonk.net'
 gnome-extensions enable 'workspace-indicator@gnome-shell-extensions.gcampax.github.com'
 gnome-extensions enable 'system-monitor@paradoxxx.zero.gmail.com'
-gnome-extensions enable 'gnome-shell-extension-maximized-by-default@axe1.github.com'
+# gnome-extensions enable 'gnome-shell-extension-maximized-by-default@axe1.github.com'
 
 cat <<EOF | dconf load /
 [org/gnome/desktop/input-sources]
@@ -72,13 +72,12 @@ dynamic-workspaces=false
 workspaces-only-on-primary=true
 
 [org/gnome/mutter/keybindings]
-toggle-tiled-left=['']
-toggle-tiled-right=['']
+toggle-tiled-left=@as []
+toggle-tiled-right=@as []
 
-[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0]
-binding='<Super>Return'
-command='gnome-terminal --window --maximize'
-name='Launch terminal'
+[org/gnome/settings-daemon/plugins/media-keys]
+custom-keybindings=@as []
+terminal=['<Super>Return']
 
 [org/gnome/settings-daemon/plugins/xsettings]
 antialiasing='grayscale'
