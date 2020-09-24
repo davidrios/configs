@@ -5,9 +5,9 @@
 	],
 	"installed_packages":
 	[
-		"Anaconda",
 		"Babel",
 		"Base16 Color Schemes",
+		"Color Highlighter",
 		"Dockerfile Syntax Highlighting",
 		"Emmet",
 		"LESS",
@@ -24,6 +24,7 @@
 		"SublimeLinter-flake8",
 		"SublimeLinter-json",
 		"TOML",
+		"TypeScript Syntax",
 		"Vue Syntax Highlight"
 	]
 }
