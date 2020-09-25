@@ -131,6 +131,17 @@ thermal-display=true
 thermal-sensor-file='/sys/class/hwmon/hwmon3/temp1_input'
 thermal-show-text=false
 thermal-style='digit'
+
+[org/gnome/shell/keybindings]
+switch-to-application-1=@as []
+switch-to-application-2=@as []
+switch-to-application-3=@as []
+switch-to-application-4=@as []
+switch-to-application-5=@as []
+switch-to-application-6=@as []
+switch-to-application-7=@as []
+switch-to-application-8=@as []
+switch-to-application-9=@as []
 EOF
 
 echo 'Done. You need to logout and login again to enable the extensions.'
