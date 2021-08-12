@@ -1,0 +1,51 @@
+{
+    "editor.find.seedSearchStringFromSelection": true,
+    "editor.fontFamily": "Consolas",
+    "editor.fontSize": 12,
+    "editor.wordWrap": "off",
+    "editor.minimap.enabled": false,
+    "telemetry.enableCrashReporter": false,
+    "telemetry.enableTelemetry": false,
+    "window.zoomLevel": 1,
+    "search.useIgnoreFiles": false,
+    "git.autoRepositoryDetection": false,
+    "git.decorations.enabled": false,
+    "git.enabled": false,
+    "keyboard.dispatch": "keyCode",
+    "[jade]": {
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true
+    },
+    "[stylus]": {
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true
+    },
+    "[javascript]": {
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true,
+        "editor.tabSize": 2
+    },
+    "[json]": {
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true,
+        "editor.tabSize": 2
+    },
+    "[lua]": {
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true
+    },
+    "explorer.autoReveal": "focusNoScroll",
+    "workbench.startupEditor": "newUntitledFile",
+    "java.configuration.checkProjectSettingsExclusions": false,
+    "python.showStartPage": false,
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
+    },
+    "window.dialogStyle": "custom",
+    "python.languageServer": "Pylance",
+    "python.analysis.indexing": true,
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
+    }
+}
