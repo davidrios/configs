@@ -13,6 +13,7 @@
 	"highlight_line": true,
 	"ignored_packages":
 	[
+		"Emmet",
 		"Rust",
 		"SublimeLinter-flake8",
 		"Vintage"
