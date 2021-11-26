@@ -13,7 +13,7 @@ DEFAULT_INCLUDES = [
     Path('/usr/local/share/applications'),
     Path('~/.local/share/applications').expanduser()
 ]
-CACHE_FILE = '/tmp/find-desktop-desktop.cache'
+CACHE_FILE = Path('~/.cache/find-desktop-apps.json').expanduser()
 
 
 def find(include_paths=None, delimiter=':', sort=True):
@@ -27,7 +27,7 @@ def find(include_paths=None, delimiter=':', sort=True):
 
     cache = {}
     try:
-        with open(CACHE_FILE, 'r') as fp:
+        with CACHE_FILE.open() as fp:
             cache = json.load(fp)
     except FileNotFoundError:
         pass
@@ -62,7 +62,7 @@ def find(include_paths=None, delimiter=':', sort=True):
         res.append((name, fname))
         cache[fname] = name
 
-    with open(CACHE_FILE, 'w') as fp:
+    with CACHE_FILE.open() as fp:
         json.dump(cache, fp)
 
     if sort:
