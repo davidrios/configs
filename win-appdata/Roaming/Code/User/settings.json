@@ -4,9 +4,7 @@
     "editor.fontSize": 12,
     "editor.wordWrap": "off",
     "editor.minimap.enabled": false,
-    "telemetry.enableCrashReporter": false,
-    "telemetry.enableTelemetry": false,
-    "window.zoomLevel": 1,
+    "telemetry.telemetryLevel": "off",
     "search.useIgnoreFiles": false,
     "git.autoRepositoryDetection": false,
     "git.decorations.enabled": false,
@@ -47,5 +45,26 @@
     "notebook.cellToolbarLocation": {
         "default": "right",
         "jupyter-notebook": "left"
-    }
+    },
+    "workbench.colorCustomizations": {
+        "terminal.background": "#0C0C0C",
+        "terminal.foreground": "#CCCCCC",
+        "terminal.ansiBlack": "#0C0C0C",
+        "terminal.ansiBrightBlack": "#767676",
+        "terminal.ansiBrightBlue": "#3B78FF",
+        "terminal.ansiBrightCyan": "#61D6D6",
+        "terminal.ansiBrightGreen": "#16C60C",
+        "terminal.ansiBrightMagenta": "#B4009E",
+        "terminal.ansiBrightRed": "#E74856",
+        "terminal.ansiBrightWhite": "#F2F2F2",
+        "terminal.ansiBrightYellow": "#F9F1A5",
+        "terminal.ansiBlue": "#0037DA",
+        "terminal.ansiCyan": "#3A96DD",
+        "terminal.ansiGreen": "#13A10E",
+        "terminal.ansiMagenta": "#881798",
+        "terminal.ansiRed": "#DB2D20",
+        "terminal.ansiWhite": "#CCCCCC",
+        "terminal.ansiYellow": "#C19C00"
+    },
+    "window.zoomLevel": 1
 }
