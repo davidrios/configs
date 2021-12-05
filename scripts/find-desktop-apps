@@ -2,7 +2,7 @@
 import logging
 import json
 import sys
-from configparser import RawConfigParser, NoOptionError
+from configparser import RawConfigParser, NoOptionError, DuplicateOptionError
 from itertools import chain
 from locale import getlocale
 from pathlib import Path
@@ -39,7 +39,11 @@ def find(include_paths=None, delimiter=':', sort=True):
             continue
 
         conf = RawConfigParser()
-        conf.read(dfile)
+        try:
+            conf.read(dfile)
+        except DuplicateOptionError:
+            log.warning(f'Error loading "{dfile.name}": duplicate option found.')
+            continue
 
         if not conf.has_section('Desktop Entry'):
             log.debug('Skipping %s, no desktop entry.', fname)
@@ -62,7 +66,7 @@ def find(include_paths=None, delimiter=':', sort=True):
         res.append((name, fname))
         cache[fname] = name
 
-    with CACHE_FILE.open() as fp:
+    with CACHE_FILE.open('w') as fp:
         json.dump(cache, fp)
 
     if sort:
