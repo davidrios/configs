@@ -3,9 +3,11 @@ local wezterm = require "wezterm";
 local font = wezterm.font("DejaVu Sans Mono");
 local default_prog = nil
 local launch_menu = {}
+local window_decorations = nil
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
   font = wezterm.font("Consolas");
+  window_decorations = "RESIZE"
 
   default_prog = {"wsl.exe"}
 
@@ -100,43 +102,51 @@ local colors = {
     "#61D6D6",
     "#F2F2F2",
   },
-  tab_bar = {
-    background = "#888888",
+  -- tab_bar = {
+  --   background = "#888888",
 
-    active_tab = {
-      bg_color = "#dddddd",
-      fg_color = "#000000",
-      intensity = "Bold",
-    },
+  --   active_tab = {
+  --     bg_color = "#dddddd",
+  --     fg_color = "#000000",
+  --     intensity = "Bold",
+  --   },
 
-    inactive_tab = {
-      bg_color = "#888888",
-      fg_color = "#000000",
-    },
+  --   inactive_tab = {
+  --     bg_color = "#888888",
+  --     fg_color = "#000000",
+  --   },
 
-    inactive_tab_hover = {
-      bg_color = "#aaaaaa",
-      fg_color = "#000000",
-    },
+  --   inactive_tab_hover = {
+  --     bg_color = "#aaaaaa",
+  --     fg_color = "#000000",
+  --   },
 
-    new_tab = {
-      bg_color = "#888888",
-      fg_color = "#000000",
-    },
+  --   new_tab = {
+  --     bg_color = "#888888",
+  --     fg_color = "#000000",
+  --   },
 
-    new_tab_hover = {
-      bg_color = "#aaaaaa",
-      fg_color = "#000000",
-    },
-  }
+  --   new_tab_hover = {
+  --     bg_color = "#aaaaaa",
+  --     fg_color = "#000000",
+  --   },
+  -- }
 }
 
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-  local title = wezterm.truncate_right(tab.active_pane.title, max_width-5)
+  local title = wezterm.truncate_right(tab.active_pane.title, max_width)
   return {
-    {Text=string.format(" %s: %s ", tab.tab_index + 1, title)},
+    {Text=string.format("%s: %s", tab.tab_index + 1, title)},
   }
 end)
+
+keys = {
+  {key="t", mods="CTRL|ALT", action="ShowLauncher"},
+  {key="w", mods="CTRL|ALT", action=wezterm.action{CloseCurrentTab={confirm=false}}}
+}
+for i=0,9 do
+  table.insert(keys, {key=i < 9 and tostring(i + 1) or "0", mods="ALT", action=wezterm.action{ActivateTab=i}})
+end
 
 return {
   font = font,
@@ -146,12 +156,13 @@ return {
   colors = colors,
   audible_bell = "Disabled",
   enable_tab_bar = true,
-  hide_tab_bar_if_only_one_tab = true,
+  hide_tab_bar_if_only_one_tab = false,
   tab_max_width = 22,
   harfbuzz_features = {"calt=0", "clig=0", "liga=0"},
   launch_menu = launch_menu,
   default_prog = default_prog,
-  keys = {
-    {key="t", mods="CTRL|ALT", action="ShowLauncher"},
-  },
+  keys = keys,
+  window_decorations = window_decorations,
+  initial_cols = 140,
+  initial_rows = 30,
 }
