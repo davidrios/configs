@@ -2,13 +2,14 @@ local wezterm = require "wezterm";
 
 local font = wezterm.font("DejaVu Sans Mono");
 local default_prog = nil
-local launch_menu = {}
+local launch_menu = nil
 local window_decorations = nil
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
   font = wezterm.font("Consolas");
   window_decorations = "RESIZE"
 
+  launch_menu = {}
   default_prog = {"wsl.exe"}
 
   table.insert(launch_menu, {
