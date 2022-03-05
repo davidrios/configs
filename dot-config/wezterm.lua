@@ -3,11 +3,10 @@ local wezterm = require "wezterm";
 local font = wezterm.font("DejaVu Sans Mono");
 local default_prog = nil
 local launch_menu = nil
-local window_decorations = nil
+local window_decorations = "RESIZE"
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
   font = wezterm.font("Consolas");
-  window_decorations = "RESIZE"
 
   launch_menu = {}
   default_prog = {"wsl.exe"}
@@ -134,13 +133,6 @@ local colors = {
   -- }
 }
 
-wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
-  local title = wezterm.truncate_right(tab.active_pane.title, max_width)
-  return {
-    {Text=string.format("%s: %s", tab.tab_index + 1, title)},
-  }
-end)
-
 keys = {
   {key="t", mods="CTRL|ALT", action="ShowLauncher"},
   {key="w", mods="CTRL|ALT", action=wezterm.action{CloseCurrentTab={confirm=false}}}
@@ -151,7 +143,7 @@ end
 
 return {
   font = font,
-  font_size = 11,
+  font_size = 12,
   enable_scroll_bar = true,
   scrollback_lines = 20000,
   colors = colors,
@@ -164,6 +156,7 @@ return {
   default_prog = default_prog,
   keys = keys,
   window_decorations = window_decorations,
-  initial_cols = 140,
-  initial_rows = 30,
+  initial_cols = 154,
+  initial_rows = 44,
+  enable_wayland = true,
 }
