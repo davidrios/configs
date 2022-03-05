@@ -1,5 +1,5 @@
 {
-    "editor.find.seedSearchStringFromSelection": true,
+    "editor.find.seedSearchStringFromSelection": "selection",
     "editor.fontFamily": "Consolas",
     "editor.fontSize": 12,
     "editor.wordWrap": "off",
@@ -31,6 +31,9 @@
     "[lua]": {
         "files.trimFinalNewlines": true,
         "files.trimTrailingWhitespace": true
+    },
+    "[rust]": {
+        "editor.formatOnSave": true,
     },
     "explorer.autoReveal": "focusNoScroll",
     "workbench.startupEditor": "newUntitledFile",
@@ -66,5 +69,19 @@
         "terminal.ansiWhite": "#CCCCCC",
         "terminal.ansiYellow": "#C19C00"
     },
-    "window.zoomLevel": 1
+    "window.zoomLevel": 1,
+    "C_Cpp.configurationWarnings": "Disabled",
+    "mesonbuild.configureOnOpen": false,
+    "[meson]": {
+        "editor.tabSize": 2
+    },
+    "rust-analyzer.inlayHints.enable": false,
+    "editor.semanticTokenColorCustomizations": {
+        "rules": {
+            "*.mutable": {
+                "underline": false
+            }
+        }
+    },
+    "redhat.telemetry.enabled": false,
 }
