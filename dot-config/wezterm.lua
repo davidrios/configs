@@ -143,7 +143,7 @@ end
 
 return {
   font = font,
-  font_size = 12,
+  font_size = 11,
   enable_scroll_bar = true,
   scrollback_lines = 20000,
   colors = colors,
