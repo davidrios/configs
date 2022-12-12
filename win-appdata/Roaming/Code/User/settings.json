@@ -35,7 +35,17 @@
     "[rust]": {
         "editor.formatOnSave": true,
     },
+    "[markdown]": {
+        "files.trimFinalNewlines": false,
+        "files.trimTrailingWhitespace": false,
+        "editor.tabSize": 4,
+        "editor.detectIndentation": false
+    },
     "explorer.autoReveal": "focusNoScroll",
+    "explorer.autoRevealExclude": {
+        "**/node_modules": true,
+        "**/bower_components": true
+    },
     "workbench.startupEditor": "newUntitledFile",
     "java.configuration.checkProjectSettingsExclusions": false,
     "python.showStartPage": false,
@@ -69,7 +79,6 @@
         "terminal.ansiWhite": "#CCCCCC",
         "terminal.ansiYellow": "#C19C00"
     },
-    "window.zoomLevel": 1,
     "C_Cpp.configurationWarnings": "Disabled",
     "mesonbuild.configureOnOpen": false,
     "[meson]": {
@@ -84,4 +93,12 @@
         }
     },
     "redhat.telemetry.enabled": false,
+    "xml.server.binary.trustedHashes": [
+        "85de78a2b9902df5f412ed6e1f4df52027208ffb40cf09627ecbf6364c400bf3"
+    ],
+    "editor.accessibilitySupport": "off",
+    "window.zoomLevel": 1,
+    "eslint.packageManager": "yarn",
+    "eslint.run": "onSave",
+    "editor.bracketPairColorization.enabled": false
 }
