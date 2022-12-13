@@ -3,7 +3,7 @@ local wezterm = require "wezterm";
 local font = wezterm.font("DejaVu Sans Mono");
 local default_prog = nil
 local launch_menu = {}
-local window_decorations = nil
+local window_decorations = "RESIZE"
 local canonicalize_pasted_newlines = nil
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
