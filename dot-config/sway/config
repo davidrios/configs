@@ -1,7 +1,3 @@
-# Default config for sway
-#
-# Copy this to ~/.config/sway/config and edit it to your liking.
-#
 # Read `man 5 sway` for a complete reference.
 
 ### Variables
@@ -19,7 +15,8 @@ set $term wezterm
 # Note: it's recommended that you pass the final command to sway
 #set $menu dmenu_path | dmenu | xargs swaymsg exec
 #set $menu j4-dmenu-desktop
-set $fzf_term kitty --config \"$HOME/.config/kitty/fzf-term.config\" --class fzf-launcher --detach
+#set $fzf_term kitty --config \"$HOME/.config/kitty/fzf-term.config\" --class fzf-launcher --detach
+set $fzf_term foot --config=\"$HOME/.config/foot/fzf-term.ini\"
 set $menu $fzf_term \"$HOME/.local/bin/fzf-launcher\"
 set $desktop_menu $fzf_term \"$HOME/.local/bin/fzf-launcher-desktop\"
 set $notify \"$HOME/.local/bin/pynotify2\"
@@ -41,7 +38,13 @@ exec swayidle -w \
               resume 'swaymsg "output * dpms on"' \
          before-sleep 'swaylock -f -c 000000'
 
+exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
+
+exec /snap/bin/emote
+
 ### Output configuration
+# If on a laptop, use kanshi. Example:
+# exec kanshi
 #
 include $HOME/.config/sway/outputs
 
@@ -49,11 +52,23 @@ include $HOME/.config/sway/outputs
 #
 # Example configuration:
 #
-#   input "2:14:SynPS/2_Synaptics_TouchPad" {
+#   input "touchpad" {
 #       dwt enabled
 #       tap enabled
 #       natural_scroll enabled
 #       middle_emulation enabled
+#   }
+#
+#   input "br_kbd" {
+#           xkb_layout br
+#           xkb_variant abnt2
+#           xkb_options ctrl:swapcaps
+#   }
+#   
+#   input "us_kbd" {
+#           xkb_layout us
+#           xkb_variant intl
+#           xkb_options ctrl:swapcaps
 #   }
 #
 # You can get the names of your inputs by running: swaymsg -t get_inputs
@@ -91,15 +106,22 @@ include $HOME/.config/sway/inputs
     bindsym $mod+Shift+e exec $desktop_exit
 
     # take screenshot
-    bindsym Print exec grim -s1 $screenshot_file && $notify 'Screenshot saved' -t "To: $screenshot_file" -e 5000
-    bindsym Alt+Print exec (slurp | grim -g- -s1 $screenshot_file) && $notify 'Screenshot saved' -t "To: $screenshot_file" -e 5000
+    #bindsym Print exec grim $screenshot_file && $notify 'Screenshot saved' -t "To: $screenshot_file" -e 5000
+    bindsym Print exec grimshot --notify save screen $screenshot_file
+    #bindsym $mod+Shift+s exec (slurp | grim -g- $screenshot_file) && $notify 'Screenshot saved' -t "To: $screenshot_file" -e 5000
+    bindsym $mod+Shift+s exec grimshot --notify copy area
+    bindsym $mod+Shift+Ctrl+s exec grimshot --notify save area $screenshot_file
 
-    bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ $(printf "%s\n" 100 $(($(pacmd dump-volumes | grep -m1 Sink | grep -Po '\d+(?=%)' | head -n1) + 3)) | sort -g | head -n1)%
-    bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -3%
-    bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+    # special keys
+    bindsym XF86AudioRaiseVolume exec pamixer -i 3
+    bindsym XF86AudioLowerVolume exec pamixer -d 3
+    bindsym XF86AudioMute exec pamixer -t
     bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
     bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym XF86MonBrightnessUp exec brightnessctl set +5%
+
+    # input emote
+    bindsym $mod+period exec /snap/bin/emote
 #
 # Moving around:
 #
@@ -217,6 +239,7 @@ bindsym $mod+r mode "resize"
 #
 # Read `man 5 sway-bar` for more information about this section.
 bar {
+    swaybar_command waybar
     position bottom
 
     # When the status_command prints a new line to stdout, swaybar updates.
@@ -235,18 +258,24 @@ bar {
 ### Custom window rules
 #
 floating_maximum_size 1680 x 1050
-for_window [app_id="gnome-calculator"] floating enabled
+for_window [app_id="org.wezfurlong.wezterm"] border pixel 1
+for_window [app_id="org.gnome."] floating enabled
+for_window [app_id="gnome-"] floating enabled
+for_window [app_id="eog"] fullscreen enabled
 for_window [class="VirtualBox" title="Virtual Media Manager"] floating enabled
 for_window [class="VirtualBox" title="Host Network Manager"] floating enabled
 for_window [class="VirtualBox" title="Network Operations Manager"] floating enabled
 for_window [class="VirtualBox Machine"] floating enabled
 for_window [app_id="zenity"] floating enabled
-for_window [app_id="sublime_text" title="Select Folder"] floating enabled, resize set 70ppt 90ppt
-for_window [app_id="sublime_text" title="Save File"] floating enabled, resize set 70ppt 90ppt
 for_window [app_id="file-roller"] floating enabled
 for_window [class="Firefox" window_role="About"] floating enabled
 for_window [class="Display-im6.q16"] floating enabled
+
 for_window [title="Save"] resize set 70ppt 90ppt
+for_window [title="Open Folder"] floating enabled
+for_window [title="Open File"] floating enabled
+for_window [title="Save File"] floating enabled
+for_window [title="Select Folder"] floating enabled
 
 for_window [app_id="fzf-launcher"] focus, floating enabled, border pixel 1
 

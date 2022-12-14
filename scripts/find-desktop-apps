@@ -23,7 +23,7 @@ def find(include_paths=None, delimiter=':', sort=True):
         include_paths = [Path(i) for i in include_paths]
 
     locale = getlocale()[0]
-    res = []
+    res = set()
 
     cache = {}
     try:
@@ -35,7 +35,7 @@ def find(include_paths=None, delimiter=':', sort=True):
     for dfile in chain.from_iterable(p.glob('*.desktop') for p in include_paths):
         fname = dfile.name
         if fname in cache:
-            res.append((cache[fname], fname))
+            res.add((cache[fname], fname))
             continue
 
         conf = RawConfigParser()
@@ -63,12 +63,13 @@ def find(include_paths=None, delimiter=':', sort=True):
         except NoOptionError:
             pass
 
-        res.append((name, fname))
+        res.add((name, fname))
         cache[fname] = name
 
     with CACHE_FILE.open('w') as fp:
         json.dump(cache, fp)
 
+    res = list(res)
     if sort:
         res.sort(key=lambda item: item[0].lower())
 

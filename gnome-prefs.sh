@@ -1,32 +1,32 @@
 #!/bin/bash
 set -e
 
-wget -O- https://github.com/aXe1/gnome-shell-extension-maximized-by-default/archive/v1.1.0.tar.gz | tar xz -C /tmp
-(cd /tmp/gnome-shell-extension-maximized-by-default-1.1.0 && \
-	./build.sh && \
-	gnome-extensions install dist/gnome-shell-extension-maximized-by-default.zip)
+#wget -O- https://github.com/aXe1/gnome-shell-extension-maximized-by-default/archive/v1.1.0.tar.gz | tar xz -C /tmp
+#(cd /tmp/gnome-shell-extension-maximized-by-default-1.1.0 && \
+#	./build.sh && \
+#	gnome-extensions install dist/gnome-shell-extension-maximized-by-default.zip)
 
-(cd /tmp && \
-	wget 'https://extensions.gnome.org/extension-data/disable-workspace-switcher-popup@github.com.v2.shell-extension.zip' && \
-	gnome-extensions install 'disable-workspace-switcher-popup@github.com.v2.shell-extension.zip')
+#(cd /tmp && \
+#	wget 'https://extensions.gnome.org/extension-data/disable-workspace-switcher-popup@github.com.v2.shell-extension.zip' && \
+#	gnome-extensions install 'disable-workspace-switcher-popup@github.com.v2.shell-extension.zip')
 
 echo 'Installing extensions...'
 sudo apt update
 sudo apt install \
 	gnome-shell-extension-hide-activities \
 	gnome-shell-extension-impatience \
-	gnome-shell-extension-move-clock \
-	gnome-shell-extension-multi-monitors \
-	gnome-shell-extension-system-monitor
+	gnome-shell-extension-system-monitor \
+	#gnome-shell-extension-move-clock \
+	#gnome-shell-extension-multi-monitors
 
 gnome-extensions enable 'launch-new-instance@gnome-shell-extensions.gcampax.github.com'
 gnome-extensions enable 'windowsNavigator@gnome-shell-extensions.gcampax.github.com'
-gnome-extensions enable 'Hide_Activities@shay.shayel.org'
-gnome-extensions enable 'impatience@gfxmonk.net'
+#gnome-extensions enable 'Hide_Activities@shay.shayel.org'
+#gnome-extensions enable 'impatience@gfxmonk.net'
 gnome-extensions enable 'workspace-indicator@gnome-shell-extensions.gcampax.github.com'
-gnome-extensions enable 'system-monitor@paradoxxx.zero.gmail.com'
-gnome-extensions enable 'disable-workspace-switcher-popup@github.com'
+#gnome-extensions enable 'system-monitor@paradoxxx.zero.gmail.com'
 
+#gnome-extensions enable 'disable-workspace-switcher-popup@github.com'
 # gnome-extensions enable 'gnome-shell-extension-maximized-by-default@axe1.github.com'
 
 cat <<EOF | dconf load /
