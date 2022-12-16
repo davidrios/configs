@@ -1,13 +1,11 @@
 local wezterm = require "wezterm";
 
-local font = wezterm.font("DejaVu Sans Mono");
 local default_prog = nil
 local launch_menu = {}
 local window_decorations = "RESIZE"
 local canonicalize_pasted_newlines = nil
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
-  font = wezterm.font("Consolas");
   window_decorations = "RESIZE"
   canonicalize_pasted_newlines = "None"
 
@@ -109,8 +107,8 @@ local colors = {
     "#61D6D6",
     "#F2F2F2",
   },
-  -- tab_bar = {
-  --   background = "#888888",
+  tab_bar = {
+    background = "#ff0000",
 
   --   active_tab = {
   --     bg_color = "#dddddd",
@@ -137,7 +135,7 @@ local colors = {
   --     bg_color = "#aaaaaa",
   --     fg_color = "#000000",
   --   },
-  -- }
+  }
 }
 
 wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_width)
@@ -158,11 +156,11 @@ for i=0,9 do
 end
 
 return {
-  font = font,
+  font = wezterm.font_with_fallback { "Consolas", "DejaVu Sans Mono", "Symbols Nerd Font Mono" },
   font_size = 11,
   enable_scroll_bar = true,
   -- scroll_bar_mode = 'AllPanes',
-  scrollback_lines = 20000,
+  scrollback_lines = 100000,
   colors = colors,
   audible_bell = "Disabled",
   enable_tab_bar = true,
@@ -198,5 +196,8 @@ return {
     -- right = "0px",
     -- top = "0px",
     -- bottom = "0px",
+  },
+  window_frame = {
+    active_titlebar_bg = '#3c3c3c'
   }
 }

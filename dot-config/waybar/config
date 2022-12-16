@@ -88,14 +88,14 @@
         //"format-alt": "{:%Y-%m-%d}"
     },
     "disk": {
-        "format": "{path}:{free}"
+        "format": "{free} "
     },
     "cpu": {
         "format": "{usage}% ",
         "tooltip": false
     },
     "memory": {
-        "format": "{}% "
+        "format": "{}% "
     },
     "temperature": {
         // "thermal-zone": 2,
@@ -108,8 +108,8 @@
     "backlight": {
         // "device": "acpi_video1",
         "format": "{percent}% {icon}",
-        //"format-icons": ["", "", "", "", "", "", "", "", ""]
-        "format-icons": [""]
+        // "format-icons": ["", "", "", "", "", "", "", "", ""]
+        "format-icons": [""]
     },
     "battery": {
         "states": {
@@ -131,18 +131,18 @@
     "network": {
         // "interface": "wlp2*", // (Optional) To force the use of this interface
         "format-wifi": "{essid} ({signalStrength}%) ",
-        "format-ethernet": "{ipaddr}/{cidr} ",
-        "tooltip-format": "{ifname} via {gwaddr}",
-        "format-linked": "{ifname} (No IP) ",
+        "format-ethernet": "{ipaddr}/{cidr} ",
+        "tooltip-format": "{ifname} via {gwaddr} ",
+        "format-linked": "{ifname} (No IP) ",
         "format-disconnected": "Disconnected ⚠",
         "format-alt": "{ifname}: {ipaddr}/{cidr}"
     },
     "pulseaudio": {
         // "scroll-step": 1, // %, can be a float
-        "format": "{volume}% {icon} {format_source}",
+        "format": "{volume}%{icon} {format_source}",
         "format-bluetooth": "{volume}% {icon} {format_source}",
-        "format-bluetooth-muted": "M {icon} {format_source}",
-        "format-muted": "M  {format_source}",
+        "format-bluetooth-muted": "\u200Eﱝ\u200E {icon} {format_source}",
+        "format-muted": "\u200Eﱝ\u200E {format_source}",
         "format-source": " {volume}% ",
         "format-source-muted": "",
         "format-icons": {
@@ -152,7 +152,7 @@
             "phone": "",
             "portable": "",
             "car": "",
-            "default": [""]
+            "default": ["奄", "奔", "墳"]
         },
         "on-click": "pavucontrol"
     },

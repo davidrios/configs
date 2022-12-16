@@ -1,0 +1,107 @@
+{
+    "editor.find.seedSearchStringFromSelection": "selection",
+    "editor.fontFamily": "Consolas, DejaVu Sans Mono, Symbols Nerd Font Mono",
+    "editor.fontSize": 12,
+    "editor.wordWrap": "off",
+    "editor.minimap.enabled": false,
+    "telemetry.telemetryLevel": "off",
+    "search.useIgnoreFiles": false,
+    "git.autoRepositoryDetection": false,
+    "git.decorations.enabled": false,
+    "git.enabled": false,
+    "keyboard.dispatch": "keyCode",
+    "[jade]": {
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true
+    },
+    "[stylus]": {
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true
+    },
+    "[javascript]": {
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true,
+        "editor.tabSize": 2
+    },
+    "[json]": {
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true,
+        "editor.tabSize": 2
+    },
+    "[lua]": {
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true
+    },
+    "[rust]": {
+        "editor.formatOnSave": true,
+    },
+    "[markdown]": {
+        "files.trimFinalNewlines": false,
+        "files.trimTrailingWhitespace": false,
+        "editor.tabSize": 4,
+        "editor.detectIndentation": false
+    },
+    "explorer.autoReveal": "focusNoScroll",
+    "explorer.autoRevealExclude": {
+        "**/node_modules": true,
+        "**/bower_components": true
+    },
+    "workbench.startupEditor": "newUntitledFile",
+    "java.configuration.checkProjectSettingsExclusions": false,
+    "python.showStartPage": false,
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter-notebook"
+    },
+    "window.dialogStyle": "custom",
+    "window.titleBarStyle": "custom",
+    "python.languageServer": "Pylance",
+    "python.analysis.indexing": true,
+    "notebook.cellToolbarLocation": {
+        "default": "right",
+        "jupyter-notebook": "left"
+    },
+    "terminal.integrated.fontFamily": "Consolas, DejaVu Sans Mono, Symbols Nerd Font Mono",
+    "terminal.integrated.fontSize": 12,
+    "workbench.colorCustomizations": {
+        "terminal.background": "#0C0C0C",
+        "terminal.foreground": "#CCCCCC",
+        "terminal.ansiBlack": "#0C0C0C",
+        "terminal.ansiBrightBlack": "#767676",
+        "terminal.ansiBrightBlue": "#3B78FF",
+        "terminal.ansiBrightCyan": "#61D6D6",
+        "terminal.ansiBrightGreen": "#16C60C",
+        "terminal.ansiBrightMagenta": "#B4009E",
+        "terminal.ansiBrightRed": "#E74856",
+        "terminal.ansiBrightWhite": "#F2F2F2",
+        "terminal.ansiBrightYellow": "#F9F1A5",
+        "terminal.ansiBlue": "#0037DA",
+        "terminal.ansiCyan": "#3A96DD",
+        "terminal.ansiGreen": "#13A10E",
+        "terminal.ansiMagenta": "#881798",
+        "terminal.ansiRed": "#DB2D20",
+        "terminal.ansiWhite": "#CCCCCC",
+        "terminal.ansiYellow": "#C19C00"
+    },
+    "C_Cpp.configurationWarnings": "Disabled",
+    "mesonbuild.configureOnOpen": false,
+    "[meson]": {
+        "editor.tabSize": 2
+    },
+    "rust-analyzer.inlayHints.enable": false,
+    "editor.semanticTokenColorCustomizations": {
+        "rules": {
+            "*.mutable": {
+                "underline": false
+            }
+        }
+    },
+    "redhat.telemetry.enabled": false,
+    "xml.server.binary.trustedHashes": [
+        "85de78a2b9902df5f412ed6e1f4df52027208ffb40cf09627ecbf6364c400bf3"
+    ],
+    "editor.accessibilitySupport": "off",
+    "window.zoomLevel": 1,
+    "eslint.packageManager": "yarn",
+    "eslint.run": "onSave",
+    "editor.bracketPairColorization.enabled": false
+}
