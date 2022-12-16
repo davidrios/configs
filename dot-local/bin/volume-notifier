@@ -71,7 +71,7 @@ def run():
 
 class GuardRunning(object):
     def __enter__(self):
-        fname = Path('/tmp') / 'volume-notifier-{}.pid'.format(os.getuid())
+        fname = Path('/var/run/user/') / str(os.getuid()) / 'volume-notifier.pid'
         self.fname = fname
         try:
             with fname.open('r') as fp:

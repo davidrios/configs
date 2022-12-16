@@ -13,8 +13,6 @@ set $right l
 set $term wezterm
 # Your preferred application launcher
 # Note: it's recommended that you pass the final command to sway
-#set $menu dmenu_path | dmenu | xargs swaymsg exec
-#set $menu j4-dmenu-desktop
 #set $fzf_term kitty --config \"$HOME/.config/kitty/fzf-term.config\" --class fzf-launcher --detach
 set $fzf_term foot --config=\"$HOME/.config/foot/fzf-term.ini\"
 set $menu $fzf_term \"$HOME/.local/bin/fzf-launcher\"
@@ -31,45 +29,22 @@ titlebar_padding 3
 #
 exec mako
 exec $HOME/.local/bin/volume-notifier
-
 exec swayidle -w \
          timeout 600 'swaylock -f -c 000000' \
          timeout 300 'swaymsg "output * dpms off"' \
               resume 'swaymsg "output * dpms on"' \
-         before-sleep 'swaylock -f -c 000000'
-
+        before-sleep 'swaylock -f -c 000000'
 exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
-
-exec /snap/bin/emote
+exec sleep 3 && exec-wrapper /snap/bin/emote
 
 ### Output configuration
-# If on a laptop, use kanshi. Example:
-# exec kanshi
+# check outputs.example
 #
 include $HOME/.config/sway/outputs
 
 ### Input configuration
 #
-# Example configuration:
-#
-#   input "touchpad" {
-#       dwt enabled
-#       tap enabled
-#       natural_scroll enabled
-#       middle_emulation enabled
-#   }
-#
-#   input "br_kbd" {
-#           xkb_layout br
-#           xkb_variant abnt2
-#           xkb_options ctrl:swapcaps
-#   }
-#   
-#   input "us_kbd" {
-#           xkb_layout us
-#           xkb_variant intl
-#           xkb_options ctrl:swapcaps
-#   }
+# check inputs.example
 #
 # You can get the names of your inputs by running: swaymsg -t get_inputs
 # Read `man 5 sway-input` for more information about this section.
@@ -271,7 +246,7 @@ for_window [app_id="file-roller"] floating enabled
 for_window [class="Firefox" window_role="About"] floating enabled
 for_window [class="Display-im6.q16"] floating enabled
 
-for_window [title="Save"] resize set 70ppt 90ppt
+for_window [title="Save"] floating enabled
 for_window [title="Open Folder"] floating enabled
 for_window [title="Open File"] floating enabled
 for_window [title="Save File"] floating enabled

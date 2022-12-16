@@ -1,0 +1,18 @@
+input "touchpad" {
+	dwt enabled
+	tap enabled
+	natural_scroll enabled
+	middle_emulation enabled
+}
+
+input "kbd1" {
+	xkb_layout br
+	xkb_variant abnt2
+	xkb_options ctrl:swapcaps
+}
+
+input "kbd2" {
+	xkb_layout us
+	xkb_variant intl
+	xkb_options ctrl:swapcaps
+}

@@ -1,0 +1,4 @@
+#!/bin/bash
+NAME=$(dmenu_path | fzf)
+[ -z "$NAME" ] && exit 1
+exec "$HOME/.local/bin/exec-wrapper" "$NAME"

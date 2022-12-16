@@ -1,0 +1,4 @@
+output DP-1 scale 2 pos 0 0
+output eDP-1 pos 1920 270
+exec kanshi
+exec_always 'xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 2'

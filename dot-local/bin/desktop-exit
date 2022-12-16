@@ -10,7 +10,14 @@ EOF
 
 case "$RESP" in
 	Logout)
-		swaymsg exit
+		case "$XDG_SESSION_DESKTOP" in
+			sway)
+				swaymsg exit
+				;;
+			*)
+				echo not sure how...
+				exit 1
+		esac
 		;;
 	Sleep)
 		systemctl suspend -i
