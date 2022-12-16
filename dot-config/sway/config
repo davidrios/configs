@@ -23,7 +23,8 @@ set $screenshot_file \"$HOME/Pictures/screenshot-$(date '+%Y-%m-%d_%H-%M-%S').pn
 set $volctl \"$HOME/.local/bin/volume-ctl\"
 
 workspace_layout tabbed
-titlebar_padding 3
+titlebar_padding 8 3
+client.focused #323232 #323232 #DDDDDD
 
 ### Startup stuff
 #
