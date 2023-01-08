@@ -42,6 +42,11 @@ xkb_symbols "latch"  {
         actions = [ LatchMods(Mods=Control,clearLocks,latchToLock) ]
     };
 
+    key <RCTL> {
+        symbols = [ ISO_Level3_Shift ],
+        actions = [ LatchMods(Mods=Control,clearLocks,latchToLock) ]
+    };
+
     key <AC11> {
         symbols = [ ISO_Level3_Shift ],
         actions = [ LatchMods(Mods=Control,clearLocks,latchToLock) ]
