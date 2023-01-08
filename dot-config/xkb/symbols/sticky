@@ -1,0 +1,50 @@
+partial alphanumeric_keys modifier_keys
+
+xkb_symbols "latch"  {
+    # sticky modifiers
+    key <RALT> {
+        symbols = [ ISO_Level3_Shift ],
+        actions = [ LatchMods(mods=Alt,clearLocks,latchToLock) ]
+    };
+
+    key <LALT> {
+        symbols = [ ISO_Level3_Shift ],
+        actions = [ LatchMods(mods=Alt,clearLocks,latchToLock) ]
+    };
+
+    key <LFSH> {
+        symbols = [ ISO_Level3_Shift ],
+        actions = [ LatchMods(mods=Shift,clearLocks,latchToLock) ]
+    };
+
+    key <RTSH> {
+        symbols = [ ISO_Level3_Shift ],
+        actions = [ LatchMods(mods=Shift,clearLocks,latchToLock) ]
+    };
+
+    key <RWIN> {
+        symbols = [ ISO_Level3_Shift ],
+        actions = [ LatchMods(Mods=Super,clearLocks,latchToLock) ]
+    };
+
+    key <LWIN> {
+        symbols = [ ISO_Level3_Shift ],
+        actions = [ LatchMods(Mods=Super,clearLocks,latchToLock) ]
+    };
+
+    key <CAPS> {
+        symbols = [ ISO_Level3_Shift ],
+        actions = [ LatchMods(Mods=Control,clearLocks,latchToLock) ]
+    };
+
+    key <LCTL> {
+        symbols = [ ISO_Level3_Shift ],
+        actions = [ LatchMods(Mods=Control,clearLocks,latchToLock) ]
+    };
+
+    key <AC11> {
+        symbols = [ ISO_Level3_Shift ],
+        actions = [ LatchMods(Mods=Control,clearLocks,latchToLock) ]
+    };
+};
+

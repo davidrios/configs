@@ -1,0 +1,5 @@
+! option = symbols
+  sticky:latch = +sticky(latch)
+
+// Include the system 'evdev' file
+! include %S/evdev
