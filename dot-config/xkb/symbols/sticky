@@ -37,15 +37,13 @@ xkb_symbols "latch"  {
         actions = [ LatchMods(Mods=Control,clearLocks,latchToLock) ]
     };
 
-    key <LCTL> {
-        symbols = [ ISO_Level3_Shift ],
-        actions = [ LatchMods(Mods=Control,clearLocks,latchToLock) ]
-    };
-
     key <RCTL> {
         symbols = [ ISO_Level3_Shift ],
         actions = [ LatchMods(Mods=Control,clearLocks,latchToLock) ]
     };
+
+    replace key <LCTL> { [ Caps_Lock ] };
+    modifier_map  Lock { <LCTL> };
 
     key <AC11> {
         symbols = [ ISO_Level3_Shift ],
