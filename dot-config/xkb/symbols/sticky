@@ -44,10 +44,5 @@ xkb_symbols "latch"  {
 
     replace key <LCTL> { [ Caps_Lock ] };
     modifier_map  Lock { <LCTL> };
-
-    key <AC11> {
-        symbols = [ ISO_Level3_Shift ],
-        actions = [ LatchMods(Mods=Control,clearLocks,latchToLock) ]
-    };
 };
 

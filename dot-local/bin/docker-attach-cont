@@ -1,0 +1,2 @@
+#!/bin/bash
+while true; do docker ps | grep "$@" | cut -d' ' -f1 | xargs -ro docker attach; echo -n 'container dettached, waiting... '; sleep 10; echo 'trying again.'; done

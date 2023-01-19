@@ -1,0 +1,5 @@
+#!/bin/env python3
+import getpass
+import sys
+sys.stdout.write(getpass.getpass())
+sys.stdout.flush()

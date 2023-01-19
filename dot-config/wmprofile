@@ -1,7 +1,10 @@
+export GTK_IM_MODULE=cedilla
+export QT_IM_MODULE=cedilla
+
 if [ "$XDG_SESSION_TYPE" == "wayland" ]; then
     export MOZ_ENABLE_WAYLAND=1
-    CHROME_FLAGS="--ozone-platform-hint=auto"
-    CHROMIUM_FLAGS="--ozone-platform-hint=auto"
+    export CHROME_FLAGS="--ozone-platform-hint=auto"
+    export CHROMIUM_FLAGS="--ozone-platform-hint=auto"
 fi
 
 if [ "$XDG_SESSION_DESKTOP" == "sway" ]; then

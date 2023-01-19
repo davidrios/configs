@@ -1,0 +1,14 @@
+#!/bin/bash
+CTRL_FILE="$XDG_RUNTIME_DIR/sticky.on"
+
+if test "$1" == "toggle"; then
+    if test -f "$CTRL_FILE"; then
+        rm -f "$CTRL_FILE"
+        swaymsg -- input '*' xkb_options 'ctrl:swapcaps'
+    else
+        touch "$CTRL_FILE"
+        swaymsg -- input '*' xkb_options 'sticky:latch'
+    fi
+else
+    test -f "$CTRL_FILE" && echo "sticky on" || echo "sticky off"
+fi
