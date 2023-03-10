@@ -244,7 +244,8 @@ for_window [class="VirtualBox" title="Network Operations Manager"] floating enab
 for_window [class="VirtualBox Machine"] floating enabled
 for_window [app_id="zenity"] floating enabled
 for_window [app_id="file-roller"] floating enabled
-for_window [class="Firefox" window_role="About"] floating enabled
+for_window [app_id="Firefox" title="About Mozilla Firefox"] floating enabled
+for_window [app_id="Firefox" title="Firefox — Sharing Indicator"] floating enabled
 for_window [class="Display-im6.q16"] floating enabled
 
 for_window [title="Save"] floating enabled
