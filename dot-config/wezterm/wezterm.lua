@@ -4,10 +4,12 @@ local default_prog = nil
 local launch_menu = {}
 local window_decorations = "RESIZE"
 local canonicalize_pasted_newlines = nil
+local font = wezterm.font_with_fallback { "DejaVu Sans Mono", "Symbols Nerd Font Mono" }
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
   window_decorations = "RESIZE"
   canonicalize_pasted_newlines = "None"
+  font = wezterm.font_with_fallback { "Consolas", "DejaVu Sans Mono", "Symbols Nerd Font Mono" }
 
   default_prog = {"wsl.exe"}
 
@@ -156,7 +158,7 @@ for i=0,9 do
 end
 
 return {
-  font = wezterm.font_with_fallback { "Consolas", "DejaVu Sans Mono", "Symbols Nerd Font Mono" },
+  font = font,
   font_size = 11,
   enable_scroll_bar = true,
   -- scroll_bar_mode = 'AllPanes',
@@ -164,7 +166,7 @@ return {
   colors = colors,
   audible_bell = "Disabled",
   enable_tab_bar = true,
-  hide_tab_bar_if_only_one_tab = false,
+  hide_tab_bar_if_only_one_tab = wezterm.target_triple ~= "x86_64-pc-windows-msvc",
   tab_max_width = 22,
   harfbuzz_features = {"calt=0", "clig=0", "liga=0"},
   launch_menu = launch_menu,
