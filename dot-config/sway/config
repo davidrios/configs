@@ -35,7 +35,8 @@ exec swayidle -w \
          timeout 300 'swaymsg "output * dpms off"' \
               resume 'swaymsg "output * dpms on"' \
         before-sleep 'swaylock -f -c 000000'
-exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
+exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
 exec sleep 3 && exec-wrapper /snap/bin/emote
 
 ### Output configuration
@@ -247,6 +248,7 @@ for_window [app_id="file-roller"] floating enabled
 for_window [app_id="Firefox" title="About Mozilla Firefox"] floating enabled
 for_window [app_id="Firefox" title="Firefox — Sharing Indicator"] floating enabled
 for_window [class="Display-im6.q16"] floating enabled
+for_window [title="Speech2Text App"] floating enabled
 
 for_window [title="Save"] floating enabled
 for_window [title="Open Folder"] floating enabled
