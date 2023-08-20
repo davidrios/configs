@@ -11,4 +11,4 @@ PS_INFO="$GREEN\u@\h$RESET:$BLUE\w"
 PS_GIT='$(__git_ps1 " '${YELLOW}'[%s]")'
 #PS_TIME="\[\033[\$((COLUMNS-10))G\] $RED[\t]"
 
-export PS1="${PS_INFO}${PS_GIT} ${PS_TIME}\n${RESET}\$ "
+export PS1="\[\e]0;\u@\h:\w\a\]${PS_INFO}${PS_GIT} ${PS_TIME}\n${RESET}\$ "
