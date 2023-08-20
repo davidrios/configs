@@ -15,8 +15,12 @@ case "$RESP" in
 				swaymsg exit
 				;;
 			*)
-				echo not sure how...
-				exit 1
+				if test -n "$SWAYSOCK"; then
+					swaymsg exit
+				else
+					echo not sure how...
+					exit 1
+				fi
 		esac
 		;;
 	Sleep)
