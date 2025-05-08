@@ -1,8 +1,9 @@
 local myutils = require("myutils")
 
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = "Explorer" })
+vim.keymap.set("n", "<leader>pv", "<cmd>tabnew<cr><cmd>NvimTreeOpen<cr><c-w>l<cmd>bd<cr>", { desc = "Explorer" })
 vim.keymap.set("n", "<leader>bd", vim.cmd.bd, { desc = "Delete buffer" })
 vim.keymap.set("n", "<leader>bD", "<cmd>bd!<cr>", { desc = "Delete buffer without saving" })
+vim.keymap.set("n", "<leader>bt", ":tabnew %<cr><c-tab><c-o><c-tab>", { desc = "Move buffer to separate tab" })
 vim.keymap.set("n", "<leader>qf", function() vim.cmd("qa!") end, { desc = "Force quit" })
 vim.keymap.set("n", "<leader>qa", "<cmd>qa<cr>", { desc = "Quit all" })
 vim.keymap.set("n", "<leader>qw", vim.cmd.xa, { desc = "Quit writing all" })
@@ -21,6 +22,7 @@ vim.keymap.set("n", "Q", "<nop>")
 vim.keymap.set("i", "<c-c>", "<esc>")
 vim.keymap.set("n", "<leader>sr", ":%s/", { desc = "Search and replace" })
 vim.keymap.set("v", "O", "$o^")
+vim.keymap.set("n", "<leader>ft", vim.cmd.NvimTreeFindFileToggle, { desc = "Find file in tree" })
 
 vim.keymap.set("n", "<leader>fG", function()
   local search = vim.fn.input("ripgrep > ")

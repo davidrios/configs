@@ -3,6 +3,9 @@ local M = {}
 local SESSION_FILE = ".neovim-session"
 M.SESSION_FILE = SESSION_FILE
 
+local RC_FILE = ".neovimrc"
+M.RC_FILE = RC_FILE
+
 local function get_last_x(my_list, x)
   local len = #my_list
   local start_index = math.max(1, len - x + 1)

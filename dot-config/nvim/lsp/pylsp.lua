@@ -26,7 +26,7 @@
 ---
 --- Note: This is a community fork of `pyls`.
 return {
-  cmd = { 'uvx', '--from', 'python-lsp-server', 'pylsp' },
+  cmd = { 'uvx', '--from', 'python-lsp-server[rope]', 'pylsp' },
   filetypes = { 'python' },
   root_markers = {
     'pyproject.toml',
