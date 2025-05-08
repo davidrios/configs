@@ -1,3 +1,26 @@
-vim.wo.relativenumber = true
+vim.opt.relativenumber = true
+vim.opt.nu = true
+
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.smartindent = true
+vim.opt.wrap = false
+vim.opt.scrolloff = 8
+vim.opt.signcolumn = "auto:2-8"
+vim.opt.colorcolumn = "80,120"
+
 vim.opt.tabline = '%!v:lua.require(\'myutils\').my_tab_line()'
+
 vim.cmd.colorscheme("catppuccin-mocha")
+
+vim.lsp.config('*', {
+  capabilities = {
+    textDocument = {
+      semanticTokens = {
+        multilineTokenSupport = true,
+      }
+    }
+  },
+  root_markers = { '.git' },
+})

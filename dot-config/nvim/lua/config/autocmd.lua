@@ -10,19 +10,19 @@ local function save_session()
   if not vim.g.session_was_loaded then
     return
   end
-  
+
   if not vim.fn.filereadable(myutils.SESSION_FILE) then
     return
   end
-  
+
   vim.cmd(":mksession! " .. myutils.SESSION_FILE)
 end
 
 vim.api.nvim_create_autocmd(
   {
-    "BufEnter", 
-    "BufFilePost", 
-    "BufWritePost", 
+    "BufEnter",
+    "BufFilePost",
+    "BufWritePost",
     "VimLeave"
   },
   {
