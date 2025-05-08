@@ -20,7 +20,11 @@ vim.lsp.config('*', {
       semanticTokens = {
         multilineTokenSupport = true,
       }
-    }
+    },
+	offsetEncoding = { 'utf-16' },
+    general = {
+      positionEncodings = { 'utf-16' },
+    },
   },
   root_markers = { '.git' },
 })
