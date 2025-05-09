@@ -7,7 +7,7 @@ vim.opt.shiftwidth = 4
 vim.opt.smartindent = true
 vim.opt.wrap = false
 vim.opt.scrolloff = 8
-vim.opt.signcolumn = "auto:2-8"
+vim.opt.signcolumn = "yes:2"
 vim.opt.colorcolumn = "80,120"
 
 vim.opt.tabline = '%!v:lua.require(\'myutils\').my_tab_line()'
@@ -27,4 +27,15 @@ vim.lsp.config('*', {
     },
   },
   root_markers = { '.git' },
+})
+
+vim.lsp.config('basedpyright', {
+  settings = {
+    basedpyright = {
+      analysis = {
+        diagnosticMode = "openFilesOnly",
+      },
+      typeCheckingMode = "basic"
+    }
+  }
 })
