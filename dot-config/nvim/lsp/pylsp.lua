@@ -26,7 +26,7 @@
 ---
 --- Note: This is a community fork of `pyls`.
 return {
-  cmd = { 'uvx', '--from', 'python-lsp-server[rope]', 'pylsp' },
+  cmd = { 'uvx', '--from', 'python-lsp-server[rope]', '--with', 'python-lsp-black', 'pylsp' },
   filetypes = { 'python' },
   root_markers = {
     'pyproject.toml',
@@ -36,4 +36,13 @@ return {
     'Pipfile',
     '.git',
   },
+  settings = {
+    pylsp = {
+      plugins = {
+        black = {
+          enabled = true
+        }
+      }
+    }
+  }
 }

@@ -1,10 +1,15 @@
+local sha1 = require("sha1")
+
 local M = {}
 
-local SESSION_FILE = ".neovim-session"
+local SESSION_FILE = ".neovim/session"
 M.SESSION_FILE = SESSION_FILE
 
-local RC_FILE = ".neovimrc"
+local RC_FILE = ".neovim/rc"
 M.RC_FILE = RC_FILE
+
+local UNDO_DIR = ".neovim/undo"
+M.UNDO_DIR = UNDO_DIR
 
 local function get_last_x(my_list, x)
   local len = #my_list
@@ -21,7 +26,6 @@ M.get_last_x = get_last_x
 
 local function call_once(fn)
   local is_called = false
-  local fn = fn
   local function wrapped()
     if is_called then
       return
@@ -32,6 +36,18 @@ local function call_once(fn)
   return wrapped
 end
 M.call_once = call_once
+
+local function str_join(chr, arr, fn)
+  if #arr == 0 then
+    return ''
+  end
+  local rest = ''
+  for i, p in vim.spairs(arr) do
+    rest = rest .. ((i > 1) and chr or '') .. (fn ~= nil and fn(p, i) or p)
+  end
+  return rest
+end
+M.str_join = str_join
 
 local function my_tab_label(n)
   local buflist = vim.fn.tabpagebuflist(n)
@@ -45,10 +61,7 @@ local function my_tab_label(n)
   local parts = get_last_x(vim.split(bufname, '/'), 3)
   local fname = table.remove(parts)
 
-  local rest = ''
-  if #parts > 0 then
-    for i, p in vim.spairs(parts) do rest = rest .. ((i > 1) and '/' or '') .. p:sub(1, 3) end
-  end
+  local rest = str_join("/", parts, function(part) return part:sub(1, 3) end)
   if #rest > 0 then
     rest = '(' .. rest .. ')'
   end
@@ -68,7 +81,7 @@ local function my_tab_line()
       s = s .. '%#TabLine#'
     end
     s = s .. '%' .. i .. 'T'
-    s = s .. ' %{v:lua.require(\'myutils\').my_tab_label(' .. i .. ')}' 
+    s = s .. ' %{v:lua.require(\'myutils\').my_tab_label(' .. i .. ')}'
   end
 
   s = s .. '%#TabLineFill#%T'
@@ -80,5 +93,55 @@ local function my_tab_line()
   return s
 end
 M.my_tab_line = my_tab_line
+
+local undo_fname_cache = {}
+local undo_path_levels = 3
+
+local function gen_undo_fpath()
+  local fpath = vim.fn.expand("%")
+  if undo_fname_cache[fpath] then
+    return undo_fname_cache[fpath]
+  end
+  local fname = sha1(fpath)
+  local parts = {UNDO_DIR}
+  for i = 1,undo_path_levels do
+    table.insert(parts, string.sub(fname, i, i))
+  end
+  table.insert(parts, fname)
+  undo_fname_cache[fpath] = parts
+  return undo_fname_cache[fpath]
+end
+M.gen_undo_fpath = gen_undo_fpath
+vim.api.nvim_create_user_command("MyUtilsUndoPath", function ()
+  vim.print(str_join("/", gen_undo_fpath()))
+end, {})
+
+local redo_loaded = {}
+local function read_undo()
+  local undo_file_path = str_join("/", gen_undo_fpath())
+  if redo_loaded[undo_file_path] then
+    return
+  end
+  if vim.fn.filereadable(undo_file_path) == 1 then
+    vim.cmd('silent rundo ' .. vim.fn.fnameescape(undo_file_path))
+    redo_loaded[undo_file_path] = true
+  end
+end
+M.read_undo = read_undo
+
+local function write_undo()
+  local undo_file_path = gen_undo_fpath()
+  local fname = undo_file_path[#undo_file_path]
+  local undo_file_dir = ""
+  for i=1,#undo_file_path-1 do
+    undo_file_dir = undo_file_dir .. (i > 1 and '/' or '') .. undo_file_path[i]
+  end
+  if #undo_file_dir > 0 then
+    vim.fn.mkdir(undo_file_dir, "p")
+  end
+  vim.cmd('silent wundo ' .. vim.fn.fnameescape(undo_file_dir .. "/" .. fname))
+end
+M.write_undo = write_undo
+
 
 return M
