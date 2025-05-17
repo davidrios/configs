@@ -3,51 +3,78 @@ local myutils = require('myutils')
 local my_augroup = vim.api.nvim_create_augroup('11ea7949-c92d-4a4e-85d6-5208fa4b3b44', { clear = true })
 
 local function save_session()
-  if not vim.g.mysession_was_loaded then
+  if vim.g.mysession_was_loaded == nil then
     return
   end
 
-  if vim.fn.filereadable(myutils.SESSION_FILE) == 0 then
+  if vim.fn.filereadable(vim.g.mysession_was_loaded) == 0 then
     return
   end
 
-  vim.cmd('mksession! ' .. vim.fn.fnameescape(myutils.SESSION_FILE))
+  vim.cmd('mksession! ' .. vim.fn.fnameescape(vim.g.mysession_was_loaded))
 end
 
 vim.api.nvim_create_autocmd('SessionLoadPost', {
   group = my_augroup,
   callback = function()
-    if vim.v.this_session:sub(-#myutils.SESSION_FILE) ~= myutils.SESSION_FILE then
+    local sessionfpath = myutils.relative_to_cwd(vim.v.this_session)
+    if sessionfpath:sub(1, #myutils.SESSION_FILE) ~= myutils.SESSION_FILE then
       return true
     end
 
-    vim.g.mysession_was_loaded = 1
+    -- vim.print('session loaded!')
+
+    vim.g.mysession_was_loaded = sessionfpath
     vim.opt.swapfile = false
     vim.opt.backup = false
     vim.opt.undofile = false
 
+    local read_undo_cached = myutils.CachedFn:new(
+      function(fpath)
+        myutils.read_undo(fpath)
+        -- vim.print('readundo!' .. fpath)
+      end,
+      myutils.cache_key_1
+    )
+
     vim.api.nvim_create_autocmd({'BufEnter', 'VimEnter'}, {
       group = my_augroup,
       pattern = '*',
-      callback = myutils.cached_fn(
-        function()
-          myutils.read_undo()
-        end,
-        function(ev) return ev.file end
-      ),
+      callback = function(ev)
+        if #ev.file == 0 then
+          return
+        end
+        local fpath = ev.file
+        if fpath:sub(1, 1) == '/' then
+          fpath = myutils.relative_to_cwd(ev.file)
+        end
+        read_undo_cached(fpath)
+      end,
+    })
+
+    vim.api.nvim_create_autocmd('BufDelete', {
+      group = my_augroup,
+      pattern = '*',
+      callback = function(ev)
+        if #ev.file == 0 then
+          return
+        end
+        local fpath = ev.file
+        if fpath:sub(1, 1) == '/' then
+          fpath = myutils.relative_to_cwd(ev.file)
+        end
+        read_undo_cached:remove_key(fpath)
+        -- vim.print('removed_undo:' .. fpath)
+      end
     })
 
     vim.api.nvim_create_autocmd('BufWritePost', {
       group = my_augroup,
       pattern = '*',
-      callback = myutils.write_undo,
+      callback = function(ev)
+        return myutils.write_undo(myutils.relative_to_cwd(ev.file))
+      end,
     })
-
-    -- vim.api.nvim_create_autocmd({'VimEnter'}, {
-    --   group = my_augroup,
-    --   pattern = '*',
-    --   callback = myutils.handle_session_nvimtree,
-    -- })
 
     vim.api.nvim_create_autocmd(
       'VimLeave',
@@ -55,7 +82,8 @@ vim.api.nvim_create_autocmd('SessionLoadPost', {
         group = my_augroup,
         callback = function()
           for _, n in ipairs(vim.api.nvim_list_bufs()) do
-            if vim.fn.bufname(n):match('NvimTree_[0-9]+') then
+            if vim.fn.bufname(n):match('NvimTree_[0-9]+')
+               or vim.fn.bufname(n):match('undotree_[0-9]+') then
               vim.api.nvim_buf_delete(n, {force=true})
             end
           end
@@ -81,26 +109,17 @@ vim.api.nvim_create_autocmd('SessionLoadPost', {
       vim.cmd('luafile ' .. vim.fn.fnameescape(myutils.RC_FILE))
     end
 
+    local suffix = sessionfpath:sub(#myutils.SESSION_FILE + 1)
+    if #suffix > 0 then
+      local rc_file = myutils.RC_FILE .. suffix
+      if vim.fn.filereadable(rc_file) == 1 then
+        vim.cmd('luafile ' .. vim.fn.fnameescape(rc_file))
+      end
+    end
+
     return true
   end
 })
-
--- vim.api.nvim_create_autocmd('SessionLoadPost', {
---   group = my_augroup,
---   callback = function(ev)
---     if not vim.g.mysession_was_loaded then
---       return
---     end
---
---     vim.print(myutils.str_join(' : ', {'sess ', vim.fn.expand('%'), vim.api.nvim_tabpage_get_number(0), vim.api.nvim_win_get_number(0)}))
---     if ev.file:match('NvimTree_[0-9]+$') then
---       -- vim.api.nvim_buf_delete(vim.fn.bufnr(ev.file), {force=true})
---       -- local winid = vim.fn.win_getid()
---       -- vim.cmd('NvimTreeFindFile')
---       -- vim.fn.win_gotoid(winid)
---     end
---   end
--- })
 
 vim.api.nvim_create_autocmd({'BufWinEnter'}, {
   group = my_augroup,

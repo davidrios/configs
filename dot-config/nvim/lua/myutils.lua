@@ -1,14 +1,15 @@
-local sha1 = require("sha1")
+local Path = require('plenary.path')
+local sha1 = require('sha1')
 
 local M = {}
 
-local SESSION_FILE = ".neovim/session"
+local SESSION_FILE = '.neovim/session'
 M.SESSION_FILE = SESSION_FILE
 
-local RC_FILE = ".neovim/rc"
+local RC_FILE = '.neovim/rc'
 M.RC_FILE = RC_FILE
 
-local UNDO_DIR = ".neovim/undo"
+local UNDO_DIR = '.neovim/undo'
 M.UNDO_DIR = UNDO_DIR
 
 local function get_last_x(my_list, x)
@@ -36,52 +37,68 @@ local function str_join(chr, arr, fn)
 end
 M.str_join = str_join
 
-local function call_once_old(fn)
-  local is_called = false
-  local function wrapped()
-    if is_called then
-      return
-    end
-    is_called = true
-    fn()
-  end
-  return wrapped
-end
-M.call_once_old = call_once_old
-
 local CACHE_NIL_KEY = {}
+local _global_cache = {}
 local _cache_id = 0
-local function cached_fn(fn, cache_key_fn)
-  local cache = {}
-  local cache_id = _cache_id
+
+local CachedFn = {}
+CachedFn.__index = CachedFn
+
+function CachedFn:new(fn, cache_key_fn, global_key)
+  local instance = {}
+  setmetatable(instance, self)
+  instance._cache_id = _cache_id
   _cache_id = _cache_id + 1
-  local cache_cnt = 0
 
-  local function wrapped(...)
-    local key = CACHE_NIL_KEY
-    if cache_key_fn ~= nil then
-      key = cache_key_fn(...)
-    end
+  if global_key ~= nil and _global_cache[global_key] ~= nil then
+    instance._cache = _global_cache[global_key]
+  else
+    instance._cache = {}
+  end
 
-    if key == nil then
-      key = CACHE_NIL_KEY
-    end
+  instance._fn = fn
+  instance._cache_key_fn = cache_key_fn
+  return instance
+end
 
-    if cache[key] ~= nil then
-      local value = cache[key][1]
-      cache_cnt = cache_cnt + 1
-      vim.print(str_join(':', {'retrieved', cache_id, cache_cnt, key, value}, tostring))
-      return value
-    end
+function CachedFn:_get_key(...)
+  local key = CACHE_NIL_KEY
+  if self._cache_key_fn ~= nil then
+    key = self._cache_key_fn(...)
+  end
 
-    local value = fn(...)
-    cache[key] = {value}
-    vim.print(str_join(':', {'computed', cache_id, key, value}, tostring))
+  if key == nil then
+    key = CACHE_NIL_KEY
+  end
+
+  return key
+end
+
+function CachedFn:__call(...)
+  --vim.print('CachedFnCall', ...)
+
+  local key = self:_get_key(...)
+  if self._cache[key] ~= nil then
+    local value = self._cache[key][1]
+    -- vim.print(str_join(':', {'retrieved', self._cache_id, key, value}, tostring))
     return value
   end
-  return wrapped
+
+  local value = self._fn(...)
+  self._cache[key] = {value}
+  -- vim.print(str_join(':', {'computed', self._cache_id, key, value}, tostring))
+  return value
 end
-M.cached_fn = cached_fn
+
+function CachedFn:remove_key(...)
+  local key = self:_get_key(...)
+  -- vim.print(str_join(':', {'removed', self._cache_id, key, '!'}, tostring))
+  self._cache[key] = nil
+end
+M.CachedFn = CachedFn
+
+local function cache_key_1(arg1) return arg1 end
+M.cache_key_1 = cache_key_1
 
 local function my_tab_label(n)
   local buflist = vim.fn.tabpagebuflist(n)
@@ -95,13 +112,18 @@ local function my_tab_label(n)
   local parts = get_last_x(vim.split(bufname, '/'), 3)
   local fname = table.remove(parts)
 
-  local rest = str_join("/", parts, function(part) return part:sub(1, 3) end)
+  local rest = str_join('/', parts, function(part) return part:sub(1, 3) end)
   if #rest > 0 then
     rest = '(' .. rest .. ')'
   end
   return n .. ':' .. fname .. (vim.bo[bufnr].modified and '*' or '') .. rest
 end
 M.my_tab_label = my_tab_label
+
+local function relative_to_cwd(fpath)
+  return Path:new(fpath):make_relative(vim.fn.getcwd())
+end
+M.relative_to_cwd = relative_to_cwd
 
 local function my_tab_line()
   local s = ''
@@ -139,102 +161,53 @@ local function _gen_undo_fpath(fpath)
   return parts
 end
 M._gen_undo_fpath = _gen_undo_fpath
-local _cached_gen_undo_fpath = cached_fn(
-  _gen_undo_fpath,
-  function(fpath) return fpath end
-)
-M._cached_gen_undo_fpath = _cached_gen_undo_fpath
 
-local function gen_undo_fpath(fpath)
-  if fpath == nil then
-    fpath = vim.fn.expand("%")
-  end
-  return _cached_gen_undo_fpath(fpath)
-end
-M.gen_undo_fpath = gen_undo_fpath
-vim.api.nvim_create_user_command("MyUtilsUndoPath", function ()
-  vim.print(str_join("/", gen_undo_fpath()))
+vim.api.nvim_create_user_command('MyUtilsUndoPath', function ()
+  vim.print(str_join('/', _gen_undo_fpath(relative_to_cwd(vim.fn.expand('%')))))
 end, {})
 
+local _read_undo_fpath = CachedFn:new(
+  function(fpath)
+    local genfpath = _gen_undo_fpath(fpath)
+    return str_join('/', genfpath)
+  end,
+  cache_key_1
+)
 local function read_undo(fpath)
-  local undo_file_path = str_join("/", gen_undo_fpath(fpath))
+  local undo_file_path = _read_undo_fpath(fpath)
   if vim.fn.filereadable(undo_file_path) == 1 then
     vim.cmd('silent rundo ' .. vim.fn.fnameescape(undo_file_path))
-    vim.print('readundo! ' .. undo_file_path)
+    -- vim.print('readundo! ' .. undo_file_path)
   end
 end
 M.read_undo = read_undo
 vim.api.nvim_create_user_command(
-  "MyUtilsReadUndo",
-  function () read_undo() end,
+  'MyUtilsReadUndo',
+  function () read_undo(relative_to_cwd(vim.fn.expand('%'))) end,
   {}
 )
 
-local function write_undo()
-  local undo_file_path = gen_undo_fpath()
-  local fname = undo_file_path[#undo_file_path]
-  local undo_file_dir = ""
-  for i=1,#undo_file_path-1 do
-    undo_file_dir = undo_file_dir .. (i > 1 and '/' or '') .. undo_file_path[i]
-  end
+local _write_undo_fpath = CachedFn:new(
+  function(fpath)
+    local undo_file_path = _gen_undo_fpath(fpath)
+    local fname = undo_file_path[#undo_file_path]
+    local undo_file_dir = ''
+    for i=1,#undo_file_path-1 do
+      undo_file_dir = undo_file_dir .. (i > 1 and '/' or '') .. undo_file_path[i]
+    end
+
+    return {undo_file_dir, fname}
+  end,
+  cache_key_1
+)
+M._write_undo_fpath = _write_undo_fpath
+local function write_undo(fpath)
+  local undo_file_dir, fname = unpack(_write_undo_fpath(fpath))
   if #undo_file_dir > 0 then
-    vim.fn.mkdir(undo_file_dir, "p")
+    vim.fn.mkdir(undo_file_dir, 'p')
   end
-  vim.cmd('silent wundo ' .. vim.fn.fnameescape(undo_file_dir .. "/" .. fname))
+  vim.cmd('silent wundo ' .. vim.fn.fnameescape(undo_file_dir .. '/' .. fname))
 end
 M.write_undo = write_undo
-
--- local cnt = 0
--- local function handle_session_nvimtree ()
---   -- local restorewin = nil
---   -- local delbuf = nil
---   -- local curtab = vim.api.nvim_tabpage_get_number(0)
---   -- local curwin = vim.api.nvim_win_get_number(0)
---   -- for _, w in ipairs(vim.api.nvim_tabpage_list_wins(curtab)) do
---   --   local bufnr = vim.api.nvim_win_get_buf(w)
---   --   if vim.fn.bufname(bufnr):match('NvimTree_[0-9]+') then
---   --     delbuf = bufnr
---   --   else
---   --     if w == curwin then
---   --       restorewin = w
---   --     end
---   --   end
---   -- end
---
---   -- local grestorewin = nil
---   -- local curtab = vim.api.nvim_tabpage_get_number(0)
---   -- local gcurwin = vim.api.nvim_win_get_number(0)
---   -- for _, t in ipairs(vim.api.nvim_list_tabpages()) do
---   --   local restorewin = nil
---   --   local delbuf = nil
---   --   for _, w in ipairs(vim.api.nvim_tabpage_list_wins(t)) do
---   --     local bufnr = vim.api.nvim_win_get_buf(w)
---   --     if vim.fn.bufname(bufnr):match('NvimTree_[0-9]+') then
---   --       delbuf = bufnr
---   --     else
---   --       if w == gcurwin then
---   --         grestorewin = w
---   --       end
---   --     end
---   --   end
---   -- end
---
---   local restored = false
---   for _, n in ipairs(vim.api.nvim_list_bufs()) do
---     if vim.fn.bufname(n):match('NvimTree_[0-9]+') then
---       vim.api.nvim_buf_delete(n, {force=true})
---       if not restored then
---         restored = true
---         local winid = vim.fn.win_getid()
---         vim.cmd('NvimTreeFindFile')
---         vim.fn.win_gotoid(winid)
---       end
---     end
---   end
---
---   vim.print('nvim tree! ' .. cnt)
--- end
--- M.handle_session_nvimtree = handle_session_nvimtree
--- vim.api.nvim_create_user_command("MyUtilsSessionNvimTree", handle_session_nvimtree, {})
 
 return M
