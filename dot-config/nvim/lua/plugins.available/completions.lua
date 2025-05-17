@@ -1,9 +1,13 @@
 return {
   {
     "hrsh7th/nvim-cmp",
+    event = { "InsertEnter", },
     config = function()
       local cmp = require("cmp")
       cmp.setup({
+        completion = {
+          autocomplete = false
+        },
         snippet = {
           expand = function(args)
             require("luasnip").lsp_expand(args.body)
@@ -25,20 +29,23 @@ return {
         })
       })
 
-      cmp.setup.cmdline({ "/", "?" }, {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = {
-          { name = "buffer" }
-        }
-      })
+      -- cmp.setup.cmdline({ "/", "?" }, {
+      --   mapping = cmp.mapping.preset.cmdline(),
+      --   sources = {
+      --     { name = "buffer" }
+      --   }
+      -- })
 
       -- cmp.setup.cmdline(":", {
       --   mapping = cmp.mapping.preset.cmdline(),
-      --   sources = cmp.config.sources({
-      --     { name = "path" }
-      --   }, {
+      --   -- sources = cmp.config.sources({
+      --   --   { name = "path" }
+      --   -- }, {
+      --   --   { name = "cmdline" }
+      --   -- }),
+      --   sources = {
       --     { name = "cmdline" }
-      --   }),
+      --   },
       --   matching = { disallow_symbol_nonprefix_matching = false }
       -- })
 

@@ -24,19 +24,6 @@ local function get_last_x(my_list, x)
 end
 M.get_last_x = get_last_x
 
-local function call_once(fn)
-  local is_called = false
-  local function wrapped()
-    if is_called then
-      return
-    end
-    is_called = true
-    fn()
-  end
-  return wrapped
-end
-M.call_once = call_once
-
 local function str_join(chr, arr, fn)
   if #arr == 0 then
     return ''
@@ -48,6 +35,53 @@ local function str_join(chr, arr, fn)
   return rest
 end
 M.str_join = str_join
+
+local function call_once_old(fn)
+  local is_called = false
+  local function wrapped()
+    if is_called then
+      return
+    end
+    is_called = true
+    fn()
+  end
+  return wrapped
+end
+M.call_once_old = call_once_old
+
+local CACHE_NIL_KEY = {}
+local _cache_id = 0
+local function cached_fn(fn, cache_key_fn)
+  local cache = {}
+  local cache_id = _cache_id
+  _cache_id = _cache_id + 1
+  local cache_cnt = 0
+
+  local function wrapped(...)
+    local key = CACHE_NIL_KEY
+    if cache_key_fn ~= nil then
+      key = cache_key_fn(...)
+    end
+
+    if key == nil then
+      key = CACHE_NIL_KEY
+    end
+
+    if cache[key] ~= nil then
+      local value = cache[key][1]
+      cache_cnt = cache_cnt + 1
+      vim.print(str_join(':', {'retrieved', cache_id, cache_cnt, key, value}, tostring))
+      return value
+    end
+
+    local value = fn(...)
+    cache[key] = {value}
+    vim.print(str_join(':', {'computed', cache_id, key, value}, tostring))
+    return value
+  end
+  return wrapped
+end
+M.cached_fn = cached_fn
 
 local function my_tab_label(n)
   local buflist = vim.fn.tabpagebuflist(n)
@@ -94,40 +128,47 @@ local function my_tab_line()
 end
 M.my_tab_line = my_tab_line
 
-local undo_fname_cache = {}
 local undo_path_levels = 3
-
-local function gen_undo_fpath()
-  local fpath = vim.fn.expand("%")
-  if undo_fname_cache[fpath] then
-    return undo_fname_cache[fpath]
-  end
+local function _gen_undo_fpath(fpath)
   local fname = sha1(fpath)
   local parts = {UNDO_DIR}
   for i = 1,undo_path_levels do
     table.insert(parts, string.sub(fname, i, i))
   end
   table.insert(parts, fname)
-  undo_fname_cache[fpath] = parts
-  return undo_fname_cache[fpath]
+  return parts
+end
+M._gen_undo_fpath = _gen_undo_fpath
+local _cached_gen_undo_fpath = cached_fn(
+  _gen_undo_fpath,
+  function(fpath) return fpath end
+)
+M._cached_gen_undo_fpath = _cached_gen_undo_fpath
+
+local function gen_undo_fpath(fpath)
+  if fpath == nil then
+    fpath = vim.fn.expand("%")
+  end
+  return _cached_gen_undo_fpath(fpath)
 end
 M.gen_undo_fpath = gen_undo_fpath
 vim.api.nvim_create_user_command("MyUtilsUndoPath", function ()
   vim.print(str_join("/", gen_undo_fpath()))
 end, {})
 
-local redo_loaded = {}
-local function read_undo()
-  local undo_file_path = str_join("/", gen_undo_fpath())
-  if redo_loaded[undo_file_path] then
-    return
-  end
+local function read_undo(fpath)
+  local undo_file_path = str_join("/", gen_undo_fpath(fpath))
   if vim.fn.filereadable(undo_file_path) == 1 then
     vim.cmd('silent rundo ' .. vim.fn.fnameescape(undo_file_path))
-    redo_loaded[undo_file_path] = true
+    vim.print('readundo! ' .. undo_file_path)
   end
 end
 M.read_undo = read_undo
+vim.api.nvim_create_user_command(
+  "MyUtilsReadUndo",
+  function () read_undo() end,
+  {}
+)
 
 local function write_undo()
   local undo_file_path = gen_undo_fpath()
@@ -143,5 +184,57 @@ local function write_undo()
 end
 M.write_undo = write_undo
 
+-- local cnt = 0
+-- local function handle_session_nvimtree ()
+--   -- local restorewin = nil
+--   -- local delbuf = nil
+--   -- local curtab = vim.api.nvim_tabpage_get_number(0)
+--   -- local curwin = vim.api.nvim_win_get_number(0)
+--   -- for _, w in ipairs(vim.api.nvim_tabpage_list_wins(curtab)) do
+--   --   local bufnr = vim.api.nvim_win_get_buf(w)
+--   --   if vim.fn.bufname(bufnr):match('NvimTree_[0-9]+') then
+--   --     delbuf = bufnr
+--   --   else
+--   --     if w == curwin then
+--   --       restorewin = w
+--   --     end
+--   --   end
+--   -- end
+--
+--   -- local grestorewin = nil
+--   -- local curtab = vim.api.nvim_tabpage_get_number(0)
+--   -- local gcurwin = vim.api.nvim_win_get_number(0)
+--   -- for _, t in ipairs(vim.api.nvim_list_tabpages()) do
+--   --   local restorewin = nil
+--   --   local delbuf = nil
+--   --   for _, w in ipairs(vim.api.nvim_tabpage_list_wins(t)) do
+--   --     local bufnr = vim.api.nvim_win_get_buf(w)
+--   --     if vim.fn.bufname(bufnr):match('NvimTree_[0-9]+') then
+--   --       delbuf = bufnr
+--   --     else
+--   --       if w == gcurwin then
+--   --         grestorewin = w
+--   --       end
+--   --     end
+--   --   end
+--   -- end
+--
+--   local restored = false
+--   for _, n in ipairs(vim.api.nvim_list_bufs()) do
+--     if vim.fn.bufname(n):match('NvimTree_[0-9]+') then
+--       vim.api.nvim_buf_delete(n, {force=true})
+--       if not restored then
+--         restored = true
+--         local winid = vim.fn.win_getid()
+--         vim.cmd('NvimTreeFindFile')
+--         vim.fn.win_gotoid(winid)
+--       end
+--     end
+--   end
+--
+--   vim.print('nvim tree! ' .. cnt)
+-- end
+-- M.handle_session_nvimtree = handle_session_nvimtree
+-- vim.api.nvim_create_user_command("MyUtilsSessionNvimTree", handle_session_nvimtree, {})
 
 return M
