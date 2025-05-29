@@ -20,6 +20,7 @@ return {
           { "<leader>s", group = "search" },
           { "<leader>u", group = "utils", icon = { icon = "󰙵 ", color = "cyan" } },
           { "<leader>x", group = "diagnotics/quickfix", icon = { icon = "󱖫 ", color = "green" } },
+          { "<leader>xd", group = "DAP" },
           { "[", group = "prev" },
           { "]", group = "next" },
           { "g", group = "goto" },
