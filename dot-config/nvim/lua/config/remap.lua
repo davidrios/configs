@@ -55,6 +55,7 @@ end, { desc = "ripgrep to new buffer" })
 
 local dap = mu.prequire("dap")
 if dap then
+  local dapw = require('dap.ui.widgets')
   vim.keymap.set("n", "<leader>xb", function() dap.toggle_breakpoint() end, { desc = "DAP: Toggle breakpoint" })
   vim.keymap.set("n", "<leader>xdr", function() dap.repl.toggle() end, { desc = "DAP: REPL" })
   vim.keymap.set({"n", "i"}, "<F12>", function() dap.repl.toggle(); return vim.cmd("wincmd w") end, { desc = "DAP: REPL" })
@@ -68,6 +69,10 @@ if dap then
   vim.keymap.set({"n", "i"}, "<F23>", function() dap.step_out() end, { desc = "DAP: Step out" })
   vim.keymap.set({"n", "i"}, "<F9>", function() dap.up() end, { desc = "DAP: Frame up" })
   vim.keymap.set({"n", "i"}, "<F21>", function() dap.down() end, { desc = "DAP: Frame down" })
+  vim.keymap.set({'n', 'v'}, '<Leader>xdh', function() dapw.hover() end, { desc = "DAP: Hover" })
+  vim.keymap.set({'n', 'v'}, '<Leader>xdp', function() dapw.preview() end, { desc = "DAP: Preview" })
+  vim.keymap.set('n', '<Leader>xdf', function() dapw.centered_float(dapw.frames) end, { desc = "DAP: Frames" })
+  vim.keymap.set('n', '<Leader>xds', function() dapw.centered_float(dapw.scopes) end, { desc = "DAP: Scopes" })
 end
 
 local telescope = mu.prequire("telescope.builtin")
