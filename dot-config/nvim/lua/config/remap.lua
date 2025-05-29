@@ -65,7 +65,9 @@ if dap then
   vim.keymap.set("n", "<leader>xdi", function() dap.step_into() end, { desc = "DAP: Step into" })
   vim.keymap.set({"n", "i"}, "<F11>", function() dap.step_into() end, { desc = "DAP: Step into" })
   vim.keymap.set("n", "<leader>xdu", function() dap.step_out() end, { desc = "DAP: Step out" })
-  vim.keymap.set({"n", "i"}, "<S-F11>", function() dap.step_out() end, { desc = "DAP: Step out" })
+  vim.keymap.set({"n", "i"}, "<F23>", function() dap.step_out() end, { desc = "DAP: Step out" })
+  vim.keymap.set({"n", "i"}, "<F9>", function() dap.up() end, { desc = "DAP: Frame up" })
+  vim.keymap.set({"n", "i"}, "<F21>", function() dap.down() end, { desc = "DAP: Frame down" })
 end
 
 local telescope = mu.prequire("telescope.builtin")
