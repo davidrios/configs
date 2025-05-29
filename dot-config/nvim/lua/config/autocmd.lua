@@ -1,4 +1,4 @@
-local myutils = require('myutils')
+local mu = require('myutils')
 
 local my_augroup = vim.api.nvim_create_augroup('11ea7949-c92d-4a4e-85d6-5208fa4b3b44', { clear = true })
 
@@ -17,8 +17,8 @@ end
 vim.api.nvim_create_autocmd('SessionLoadPost', {
   group = my_augroup,
   callback = function()
-    local sessionfpath = myutils.relative_to_cwd(vim.v.this_session)
-    if sessionfpath:sub(1, #myutils.SESSION_FILE) ~= myutils.SESSION_FILE then
+    local sessionfpath = mu.relative_to_cwd(vim.v.this_session)
+    if sessionfpath:sub(1, #mu.SESSION_FILE) ~= mu.SESSION_FILE then
       return true
     end
 
@@ -29,12 +29,12 @@ vim.api.nvim_create_autocmd('SessionLoadPost', {
     vim.opt.backup = false
     vim.opt.undofile = false
 
-    local read_undo_cached = myutils.CachedFn:new(
+    local read_undo_cached = mu.CachedFn:new(
       function(fpath)
-        myutils.read_undo(fpath)
+        mu.read_undo(fpath)
         -- vim.print('readundo!' .. fpath)
       end,
-      myutils.cache_key_1
+      mu.cache_key_1
     )
 
     vim.api.nvim_create_autocmd({'BufEnter', 'VimEnter'}, {
@@ -46,7 +46,7 @@ vim.api.nvim_create_autocmd('SessionLoadPost', {
         end
         local fpath = ev.file
         if fpath:sub(1, 1) == '/' then
-          fpath = myutils.relative_to_cwd(ev.file)
+          fpath = mu.relative_to_cwd(ev.file)
         end
         read_undo_cached(fpath)
       end,
@@ -61,7 +61,7 @@ vim.api.nvim_create_autocmd('SessionLoadPost', {
         end
         local fpath = ev.file
         if fpath:sub(1, 1) == '/' then
-          fpath = myutils.relative_to_cwd(ev.file)
+          fpath = mu.relative_to_cwd(ev.file)
         end
         read_undo_cached:remove_key(fpath)
         -- vim.print('removed_undo:' .. fpath)
@@ -72,7 +72,7 @@ vim.api.nvim_create_autocmd('SessionLoadPost', {
       group = my_augroup,
       pattern = '*',
       callback = function(ev)
-        return myutils.write_undo(myutils.relative_to_cwd(ev.file))
+        return mu.write_undo(mu.relative_to_cwd(ev.file))
       end,
     })
 
@@ -105,13 +105,14 @@ vim.api.nvim_create_autocmd('SessionLoadPost', {
       }
     )
 
-    if vim.fn.filereadable(myutils.RC_FILE) == 1 then
-      vim.cmd('luafile ' .. vim.fn.fnameescape(myutils.RC_FILE))
+    local rc_file = mu.RC_FILE .. '.lua'
+    if vim.fn.filereadable(rc_file) == 1 then
+      vim.cmd('luafile ' .. vim.fn.fnameescape(rc_file))
     end
 
-    local suffix = sessionfpath:sub(#myutils.SESSION_FILE + 1)
+    local suffix = sessionfpath:sub(#mu.SESSION_FILE + 1)
     if #suffix > 0 then
-      local rc_file = myutils.RC_FILE .. suffix
+      rc_file = mu.RC_FILE .. suffix .. '.lua'
       if vim.fn.filereadable(rc_file) == 1 then
         vim.cmd('luafile ' .. vim.fn.fnameescape(rc_file))
       end

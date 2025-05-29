@@ -12,6 +12,14 @@ M.RC_FILE = RC_FILE
 local UNDO_DIR = '.neovim/undo'
 M.UNDO_DIR = UNDO_DIR
 
+local function prequire(...)
+  local status, lib = pcall(require, ...)
+  if(status) then return lib end
+  vim.print('Failed to require ' .. ...)
+  return nil
+end
+M.prequire = prequire
+
 local function get_last_x(my_list, x)
   local len = #my_list
   local start_index = math.max(1, len - x + 1)
@@ -209,5 +217,21 @@ local function write_undo(fpath)
   vim.cmd('silent wundo ' .. vim.fn.fnameescape(undo_file_dir .. '/' .. fname))
 end
 M.write_undo = write_undo
+
+local function genAttachPython(name, port, remoteRoot)
+  return {
+    type = 'python',
+    request = 'attach',
+    name = 'attach ' .. name,
+    pathMappings = {
+      { localRoot = vim.fn.getcwd(), remoteRoot = remoteRoot or vim.fn.getcwd() }
+    },
+    connect = function()
+      local host = '127.0.0.1'
+      return { host = host, port = port }
+    end,
+  }
+end
+M.genAttachPython = genAttachPython
 
 return M
