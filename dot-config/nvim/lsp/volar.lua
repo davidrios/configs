@@ -73,7 +73,7 @@
 --- })
 --- ```
 
-local util = require 'lspconfig.util'
+-- local util = require 'lspconfig.util'
 
 -- https://github.com/vuejs/language-tools/blob/master/packages/language-server/lib/types.ts
 local volar_init_options = {
@@ -89,7 +89,7 @@ return {
   init_options = volar_init_options,
   before_init = function(_, config)
     if config.init_options and config.init_options.typescript and config.init_options.typescript.tsdk == '' then
-      config.init_options.typescript.tsdk = util.get_typescript_server_path(config.root_dir)
+      config.init_options.typescript.tsdk = vim.fn.expand('~') .. '/.config/yarn/global/node_modules/typescript/lib/'
     end
   end,
 }

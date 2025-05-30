@@ -128,3 +128,18 @@ vim.api.nvim_create_autocmd({'BufWinEnter'}, {
   pattern = '*',
   command = 'silent! normal! g`"zv',
 })
+
+vim.api.nvim_create_autocmd({'BufRead'}, {
+  group = my_augroup,
+  desc = 'Detect other file types',
+  pattern = '*',
+  callback = function(ev)
+    local bufnr = ev.buf
+    if vim.bo[bufnr].filetype == '' or vim.bo[bufnr].filetype == 'conf' then
+      local first_line = vim.api.nvim_buf_get_lines(bufnr, 0, 1, false)[1]
+      if first_line and vim.startswith(first_line, "#!/usr/bin/env -S uv run") then
+        vim.bo[bufnr].filetype = "python"
+      end
+    end
+  end
+})
