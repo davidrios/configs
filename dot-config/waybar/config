@@ -99,7 +99,7 @@
     },
     "temperature": {
         // "thermal-zone": 2,
-        "hwmon-path": "/sys/class/hwmon/hwmon6/temp1_input",
+        "hwmon-path": "/sys/class/hwmon/hwmon2/temp13_input",
         "critical-threshold": 95,
         // "format-critical": "{temperatureC}°C {icon}",
         "format": "{temperatureC}°C {icon}",
@@ -129,7 +129,7 @@
         "bat": "BAT2"
     },
     "network": {
-        // "interface": "wlp2*", // (Optional) To force the use of this interface
+        // "interface": "wlo1", // (Optional) To force the use of this interface
         "format-wifi": "{essid} ({signalStrength}%) ",
         "format-ethernet": "{ipaddr}/{cidr} ",
         "tooltip-format": "{ifname} via {gwaddr} ",
@@ -141,8 +141,8 @@
         // "scroll-step": 1, // %, can be a float
         "format": "{volume}%{icon} {format_source}",
         "format-bluetooth": "{volume}% {icon} {format_source}",
-        "format-bluetooth-muted": "\u200Eﱝ\u200E {icon} {format_source}",
-        "format-muted": "\u200Eﱝ\u200E {format_source}",
+        "format-bluetooth-muted": "\u200E\u200E {icon} {format_source}",
+        "format-muted": "\u200E\u200E {format_source}",
         "format-source": " {volume}% ",
         "format-source-muted": "  ",
         "format-icons": {
@@ -152,7 +152,8 @@
             "phone": "",
             "portable": "",
             "car": "",
-            "default": ["奄", "奔", "墳"]
+			"default": " "
+            //"default": ["", "", ""]
         },
         "on-click": "pavucontrol"
     },

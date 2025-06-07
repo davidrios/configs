@@ -12,3 +12,6 @@ PS_GIT='$(__git_ps1 " '${YELLOW}'[%s]")'
 #PS_TIME="\[\033[\$((COLUMNS-10))G\] $RED[\t]"
 
 export PS1="\[\e]0;\u@\h:\w\a\]${PS_INFO}${PS_GIT} ${PS_TIME}\n${RESET}\$ "
+ORIG_PS1="$PS1"
+
+alias nv='mkdir -p .neovim && (nvim -es -c ":mksession .neovim/session" || true) && (test -n "$_WINDOW_TITLE" || echo -ne "\033]0;$(basename $PWD@$HOSTNAME)\007") && nvim -S .neovim/session'

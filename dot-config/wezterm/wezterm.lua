@@ -4,7 +4,7 @@ local default_prog = nil
 local launch_menu = {}
 local window_decorations = "RESIZE"
 local canonicalize_pasted_newlines = nil
-local font = wezterm.font_with_fallback { "DejaVu Sans Mono", "Symbols Nerd Font Mono" }
+local font = wezterm.font_with_fallback { "DejaVu Sans Mono", "Symbols Nerd Font Mono", "Font Awesome 6 Free Solid" }
 
 if wezterm.target_triple == "x86_64-pc-windows-msvc" then
   window_decorations = "RESIZE"

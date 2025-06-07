@@ -10,7 +10,7 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term wezterm
+set $term $HOME/.local/bin/wezterm
 # Your preferred application launcher
 # Note: it's recommended that you pass the final command to sway
 #set $fzf_term kitty --config \"$HOME/.config/kitty/fzf-term.config\" --class fzf-launcher --detach
@@ -25,6 +25,7 @@ set $volctl \"$HOME/.local/bin/volume-ctl\"
 workspace_layout tabbed
 titlebar_padding 8 3
 client.focused #323232 #323232 #DDDDDD
+client.unfocused #333333 #222222 #555555
 
 ### Startup stuff
 #
@@ -35,10 +36,19 @@ exec swayidle -w \
          timeout 300 'swaymsg "output * dpms off"' \
               resume 'swaymsg "output * dpms on"' \
         before-sleep 'swaylock -f -c 000000'
-exec systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
-exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP
-exec sleep 3 && exec-wrapper /snap/bin/emote
 
+# Upstream refuses to set XDG_CURRENT_DESKTOP so we have to.
+exec systemctl --user set-environment XDG_CURRENT_DESKTOP=sway
+exec systemctl --user import-environment DISPLAY \
+                                         SWAYSOCK \
+                                         WAYLAND_DISPLAY \
+                                         XDG_CURRENT_DESKTOP
+
+exec hash dbus-update-activation-environment 2>/dev/null && \
+     dbus-update-activation-environment --systemd DISPLAY \
+                                                  SWAYSOCK \
+                                                  XDG_CURRENT_DESKTOP=sway \
+                                                  WAYLAND_DISPLAY
 ### Output configuration
 # check outputs.example
 #
@@ -78,13 +88,15 @@ include $HOME/.config/sway/inputs
 
     # lock screen
     bindsym $mod+Shift+Alt+l exec swaylock -c 000000
+    #bindsym $mod+Shift+Alt+l exec swaymsg "output * dpms off" && swaylock -c 000000 && swaymsg "output * dpms on"
+    bindsym $mod+Shift+Alt+o exec swaymsg "output * dpms on"
 
     # exit sway (logs you out of your Wayland session)
     bindsym $mod+Shift+e exec $desktop_exit
 
     # take screenshot
-    #bindsym Print exec grim $screenshot_file && $notify 'Screenshot saved' -t "To: $screenshot_file" -e 5000
-    bindsym Print exec grimshot --notify save screen $screenshot_file
+    #bindsym Print exec grimshot --notify save screen $screenshot_file
+    bindsym Print exec grimshot --notify copy area
     #bindsym $mod+Shift+s exec (slurp | grim -g- $screenshot_file) && $notify 'Screenshot saved' -t "To: $screenshot_file" -e 5000
     bindsym $mod+Shift+s exec grimshot --notify copy area
     bindsym $mod+Shift+Ctrl+s exec grimshot --notify save area $screenshot_file
@@ -98,7 +110,7 @@ include $HOME/.config/sway/inputs
     bindsym XF86MonBrightnessUp exec brightnessctl set +5%
 
     # input emote
-    bindsym $mod+period exec /snap/bin/emote
+    bindsym $mod+period exec rofi -modi emoji -show emoji
 #
 # Moving around:
 #
@@ -223,7 +235,7 @@ bar {
     # The default just shows the current date and time.
     status_command i3status
     #status_command ~/local/bin/i3status-rs ~/.config/sway/i3status.toml
-    font pango:DejaVu Sans Mono, FontAwesome 11
+    font pango:DejaVu Sans Mono, FontAwesome 10
 
     colors {
         statusline #ffffff
@@ -258,4 +270,4 @@ for_window [title="Select Folder"] floating enabled
 
 for_window [app_id="fzf-launcher"] focus, floating enabled, border pixel 1
 
-include /usr/local/etc/sway/config.d/*
+#include /usr/local/etc/sway/config.d/*
