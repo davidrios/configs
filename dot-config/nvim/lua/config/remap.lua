@@ -17,7 +17,7 @@ vim.keymap.set("n", "<leader>ucc", "<cmd>Centerpad 53<cr><cmd>Centerpad 53<cr>",
 vim.keymap.set("n", "<leader>uh", vim.cmd.noh, { desc = "Clear highlight" })
 vim.keymap.set("n", "<leader>uz", "<cmd>UndotreeToggle<cr><cmd>UndotreeFocus<cr>", { desc = "Toggle and focus undo tree" })
 -- vim.keymap.set("n", "<leader>uus", "<cmd>mksession! " .. mu.SESSION_FILE .. "<cr>", { desc = "Save session to default file" })
-vim.keymap.set("n", "<c-s>", "mzggg0gqG'zzz<cmd>w<cr>", { desc = "Reformat and write buffer" })
+vim.keymap.set("n", "<c-s>", function() vim.lsp.buf.format(); vim.cmd.w() end, { desc = "Reformat and write buffer" })
 vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv")
 vim.keymap.set("x", "<leader>p", "\"_dP", { desc = "Paste without saving" })
